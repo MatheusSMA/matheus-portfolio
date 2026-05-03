@@ -1482,7 +1482,7 @@ const modalData = {
         { title: 'Desafio de Força', stage: 'POC' },
         { title: 'Sons do Motor', stage: 'POC' },
       ]},
-      { name: '🏟️ Museu Olímpico', items: [
+      { name: {pt: '🏟️ Museu Olímpico', en: '🏟️ Olympic Museum'}, items: [
         { title: 'Velódromo — Tablets de RA', stage: 'Alteração' },
         { title: 'Parque Olímpico: Coração dos Jogos | Maquete', stage: 'QA' },
         { title: 'Bug — Elementos que Congelam', stage: 'Alteração' },
@@ -1497,7 +1497,7 @@ const modalData = {
         { title: 'Livro Feitiço Secreto', stage: 'Entrega Final' },
         { title: 'Estudo AI Photo + Inpainting API', stage: 'POC' },
       ]},
-      { name: '🧽 Bob Esponja', items: [
+      { name: {pt: '🧽 Bob Esponja', en: '🧽 SpongeBob'}, items: [
         { title: 'Mesa Touch Acervo — FANDOM', stage: 'v1' },
         { title: 'Game-Hero — Hamburguer', stage: 'QA2' },
         { title: 'Mapa do Circuito Interativo', stage: 'QA1' },
@@ -1519,7 +1519,7 @@ const modalData = {
         { title: 'Espantalho', stage: 'Entrega Final' },
         { title: 'Nascente', stage: 'Entrega Final' },
       ]},
-      { name: '🐰 Parque da Mônica', items: [
+      { name: {pt: '🐰 Parque da Mônica', en: "🐰 Monica's Gang Park"}, items: [
         { title: 'Chão é Água', stage: 'Entrega Final', imageWide: 'Real games/Turma da Monica - Chão é Água.mp4' },
         { title: 'Laboratório Reativo', stage: 'Entrega Final', imageWide: 'Real games/Turma da Monica - Laboratório Reativo.mp4' },
         { title: 'Quente Frio', stage: 'Entrega Final', imageWide: 'Real games/Turma da Monica - Quente Frio.mp4' },
@@ -1750,6 +1750,7 @@ function openModal(id) {
     : `<img src="${src}" alt="" loading="lazy">`;
 
   const groupsHtml = data.groups.map(g => {
+    const groupName = typeof g.name === 'object' ? (g.name[currentLang] || g.name.pt) : g.name;
     const itemsHtml = g.items.map(item => {
       const linkHtml = item.link ? `<a href="${item.link}" target="_blank" class="modal-item-link">↗</a>` : '';
       if (item.imageWide) {
@@ -1758,7 +1759,7 @@ function openModal(id) {
       const thumbHtml = item.image ? `<div class="modal-item-thumb">${mediaTag(item.image)}</div>` : '';
       return `<div class="modal-item">${thumbHtml}<span class="modal-item-title">${item.title}</span><span class="modal-item-stage">${item.stage}</span>${linkHtml}</div>`;
     }).join('');
-    return `<div class="modal-group"><p class="modal-group-name">${g.name}</p><div class="modal-items">${itemsHtml}</div></div>`;
+    return `<div class="modal-group"><p class="modal-group-name">${groupName}</p><div class="modal-items">${itemsHtml}</div></div>`;
   }).join('');
 
   document.getElementById('modal-content').innerHTML = `
@@ -1829,8 +1830,8 @@ const i18n = {
     'ed-perim': 'Primeira experiência internacional — projeto encomendado pela Marathon, ambas em Montreal/Canadá. Software em Unity/C# para designers profissionais construírem gavetas planejadas. Reuniões semanais em inglês, método Kanban e build WebGL.',
     'footer-copy': '© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE',
     'typewriter': ['Desenvolvedor de Games | Programador', 'Unity & Unreal Engine 5', 'Especialista VR / AR / XR', 'Tech Art & Experiências Interativas'],
-    'modal-role-rg': 'Tech Art & Game Developer · Nov 2023 – Atualmente',
-    'modal-desc-rg': 'Studio da Ydreams Global. Experiências e jogos imersivos AR/VR/XR para Globo (GEX), Paramount, Turma da Mônica, FG Empreendimentos, MURO Olímpico e Nickelodeon.',
+    'modal-role-rg': 'Tech Art & Game Developer · Dez 2023 – Atualmente',
+    'modal-desc-rg': 'Empresa especializada em games e experiências interativas para grandes marcas e eventos. 16 clientes: Globo, Mattel, Wicked, Bob Esponja, FIRJAN, Parque da Mônica, Museu Olímpico, Peppa Pig, Hello Kitty e outros.',
     'modal-role-67': 'Game Developer & Team Lead · Mar 2022 – Mar 2023',
     'modal-desc-67': 'Startup focada em jogos hypercasual mobile. Liderança de equipe, integração de SDKs (Android/Facebook), build e publicação na Play Store.',
     'modal-role-sony': 'Backend & Game Developer · Mai 2024 – Mai 2025',
@@ -1894,8 +1895,8 @@ const i18n = {
     'ed-perim': 'First international experience — project commissioned by Marathon, both based in Montreal/Canada. Software in Unity/C# for professional designers to build planned drawers. Weekly meetings in English, Kanban method and WebGL build.',
     'footer-copy': '© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE',
     'typewriter': ['Game Developer | Programmer', 'Unity & Unreal Engine 5', 'VR / AR / XR Specialist', 'Tech Art & Interactive Experiences'],
-    'modal-role-rg': 'Tech Art & Game Developer · Nov 2023 – Present',
-    'modal-desc-rg': 'Studio under Ydreams Global. Immersive AR/VR/XR experiences and games for Globo (GEX), Paramount, Turma da Mônica, FG Empreendimentos, MURO Olímpico and Nickelodeon.',
+    'modal-role-rg': 'Tech Art & Game Developer · Dec 2023 – Present',
+    'modal-desc-rg': 'Company specialized in games and interactive experiences for major brands and events. 16 clients: Globo, Mattel, Wicked, SpongeBob, FIRJAN, Monica\'s Gang Park, Olympic Museum, Peppa Pig, Hello Kitty and more.',
     'modal-role-67': 'Game Developer & Team Lead · Mar 2022 – Mar 2023',
     'modal-desc-67': 'Startup focused on hypercasual mobile games. Team leadership, SDK integration (Android/Facebook), build and publishing on Play Store.',
     'modal-role-sony': 'Backend & Game Developer · May 2024 – May 2025',
