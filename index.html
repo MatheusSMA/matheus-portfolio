@@ -788,6 +788,28 @@
     font-size: 0.8rem;
     color: var(--text-dim);
   }
+  .client-ticker-wrap {
+    overflow: hidden;
+    width: 100%;
+    margin: 0.35rem 0;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  }
+  .client-ticker {
+    display: inline-block;
+    white-space: nowrap;
+    animation: clientTicker 14s linear infinite;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--neon);
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+  }
+  .company-card:hover .client-ticker { opacity: 1; }
+  @keyframes clientTicker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
   .company-arrow {
     position: absolute;
     bottom: 1.1rem;
@@ -1128,11 +1150,14 @@
 
         <div class="company-card reveal reveal-delay-1" onclick="openModal('real-games')">
           <div class="company-media">
-            <div class="company-logo-area"><span class="company-icon">🎮</span></div>
+            <video src="Real games/TMNT VR.mp4" autoplay loop muted playsinline></video>
           </div>
           <div class="company-info">
             <h3 class="company-name">Real Games Studio</h3>
             <p class="company-role">Tech Art & Game Developer</p>
+            <div class="client-ticker-wrap">
+              <div class="client-ticker">Senna Park &nbsp;·&nbsp; TMNT &nbsp;·&nbsp; Wicked &nbsp;·&nbsp; BOB Esponja &nbsp;·&nbsp; FIRJAN &nbsp;·&nbsp; Mattel &nbsp;·&nbsp; Sabesp &nbsp;·&nbsp; MuRO &nbsp;·&nbsp; MAC &nbsp;·&nbsp; Sony &nbsp;&nbsp;&nbsp;&nbsp; Senna Park &nbsp;·&nbsp; TMNT &nbsp;·&nbsp; Wicked &nbsp;·&nbsp; BOB Esponja &nbsp;·&nbsp; FIRJAN &nbsp;·&nbsp; Mattel &nbsp;·&nbsp; Sabesp &nbsp;·&nbsp; MuRO &nbsp;·&nbsp; MAC &nbsp;·&nbsp; Sony &nbsp;&nbsp;&nbsp;&nbsp;</div>
+            </div>
             <p class="company-count" data-i18n="cc-rg">43 projetos · AR, VR, Interativos</p>
             <span class="company-arrow">→</span>
           </div>
@@ -1435,6 +1460,7 @@ const modalData = {
       ]},
       { name: '🐢 TNMT — Tartarugas Ninja', items: [
         { title: 'RA Máscaras', stage: 'Entrega Final' },
+        { title: 'TMNT VR', stage: 'Entrega Final', imageWide: 'Real games/TMNT VR.mp4' },
       ]},
       { name: '🏛️ FIRJAN', items: [
         { title: 'F5 — Aprender a Reaprender', stage: 'Entrega Final' },
@@ -1455,6 +1481,9 @@ const modalData = {
       { name: '💧 Sabesp / Chico Bento', items: [
         { title: 'Espantalho', stage: 'Entrega Final' },
         { title: 'Nascente', stage: 'Entrega Final' },
+        { title: 'Chão é Lava', stage: 'Entrega Final', imageWide: 'Real games/Turma da Monica - Chão é Água.mp4' },
+        { title: 'Laboratório Reativo', stage: 'Entrega Final', imageWide: 'Real games/Turma da Monica - Laboratório Reativo.mp4' },
+        { title: 'Quente Frio', stage: 'Entrega Final', imageWide: 'Real games/Turma da Monica - Quente Frio.mp4' },
       ]},
       { name: '🖼️ Outros', items: [
         { title: 'MAC — Arte de Fio a Pavio (Telas de Pintura)', stage: 'Alteração' },
