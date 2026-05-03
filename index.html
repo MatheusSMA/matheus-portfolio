@@ -751,9 +751,11 @@
     width: 100%; height: 100%;
     object-fit: cover;
     filter: grayscale(20%) brightness(0.85);
-    transition: filter 0.4s, transform 0.4s;
+    transition: filter 0.4s, transform 0.4s, opacity 0.5s;
     display: block;
+    position: absolute; inset: 0;
   }
+  .company-media { position: relative; }
   .company-card:hover .company-media video,
   .company-card:hover .company-media img {
     filter: grayscale(0%) brightness(1);
@@ -1149,7 +1151,7 @@
         </div>
 
         <div class="company-card reveal reveal-delay-1" onclick="openModal('real-games')">
-          <div class="company-media">
+          <div class="company-media" data-slides='["Real games/TMNT VR.mp4","Real games/Turma da Monica - Chão é Água.mp4","Real games/Turma da Monica - Laboratório Reativo.mp4","Real games/Turma da Monica - Quente Frio.mp4"]'>
             <video src="Real games/TMNT VR.mp4" autoplay loop muted playsinline></video>
           </div>
           <div class="company-info">
@@ -1414,6 +1416,38 @@ document.querySelectorAll('.project-card').forEach(card => {
     card.style.transform=`perspective(600px) rotateY(${x*8}deg) rotateX(${-y*8}deg) scale(1.02)`;
   });
   card.addEventListener('mouseleave', () => { card.style.transform=''; });
+});
+
+// ─── COMPANY CARD MEDIA SLIDESHOW ───
+document.querySelectorAll('.company-media[data-slides]').forEach(mediaEl => {
+  const slides = JSON.parse(mediaEl.dataset.slides);
+  if (slides.length <= 1) return;
+  let current = 0;
+
+  function makeEl(src) {
+    const isVid = /\.(mp4|webm)$/i.test(src);
+    const el = document.createElement(isVid ? 'video' : 'img');
+    if (isVid) { el.autoplay = true; el.loop = true; el.muted = true; el.setAttribute('playsinline',''); }
+    el.src = src;
+    el.style.opacity = '0';
+    return el;
+  }
+
+  function nextSlide() {
+    const outEl = mediaEl.querySelector('video, img');
+    current = (current + 1) % slides.length;
+    const inEl = makeEl(slides[current]);
+    mediaEl.appendChild(inEl);
+    // fade in after paint
+    requestAnimationFrame(() => requestAnimationFrame(() => { inEl.style.opacity = ''; }));
+    // fade out old after transition starts
+    if (outEl) {
+      outEl.style.opacity = '0';
+      setTimeout(() => outEl.remove(), 600);
+    }
+  }
+
+  setInterval(nextSlide, 5000);
 });
 
 // ─── SCROLL REVEAL ───
