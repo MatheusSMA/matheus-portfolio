@@ -1419,35 +1419,46 @@ document.querySelectorAll('.project-card').forEach(card => {
 });
 
 // ─── COMPANY CARD MEDIA SLIDESHOW ───
+// Pool approach: all slides created at page-load so they preload in background.
+// Transitions are pure opacity crossfades — no DOM creation during switch.
 document.querySelectorAll('.company-media[data-slides]').forEach(mediaEl => {
   const slides = JSON.parse(mediaEl.dataset.slides);
   if (slides.length <= 1) return;
   let current = 0;
 
-  function makeEl(src) {
+  // Build stacked pool — all elements appended immediately so browser starts loading
+  mediaEl.innerHTML = '';
+  const pool = slides.map((src, i) => {
     const isVid = /\.(mp4|webm)$/i.test(src);
     const el = document.createElement(isVid ? 'video' : 'img');
-    if (isVid) { el.autoplay = true; el.loop = true; el.muted = true; el.setAttribute('playsinline',''); }
-    el.src = src;
-    el.style.opacity = '0';
-    return el;
-  }
-
-  function nextSlide() {
-    const outEl = mediaEl.querySelector('video, img');
-    current = (current + 1) % slides.length;
-    const inEl = makeEl(slides[current]);
-    mediaEl.appendChild(inEl);
-    // fade in after paint
-    requestAnimationFrame(() => requestAnimationFrame(() => { inEl.style.opacity = ''; }));
-    // fade out old after transition starts
-    if (outEl) {
-      outEl.style.opacity = '0';
-      setTimeout(() => outEl.remove(), 600);
+    if (isVid) {
+      el.loop = true;
+      el.muted = true;
+      el.setAttribute('playsinline', '');
+      el.preload = 'auto'; // buffer content in background
+      if (i === 0) el.autoplay = true;
     }
-  }
+    el.src = src;
+    el.style.opacity = i === 0 ? '1' : '0';
+    mediaEl.appendChild(el);
+    return el;
+  });
 
-  setInterval(nextSlide, 5000);
+  setInterval(() => {
+    const next = (current + 1) % slides.length;
+    const inEl = pool[next];
+    const outEl = pool[current];
+
+    // Start video playback from beginning when it becomes active
+    if (inEl.tagName === 'VIDEO') {
+      inEl.currentTime = 0;
+      inEl.play().catch(() => {});
+    }
+
+    inEl.style.opacity = '1';
+    outEl.style.opacity = '0';
+    current = next;
+  }, 5000);
 });
 
 // ─── SCROLL REVEAL ───
