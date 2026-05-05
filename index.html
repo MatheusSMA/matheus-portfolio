@@ -694,28 +694,7 @@
       clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
       position: relative;
     }
-    .skill-tag[data-tip]:hover::before {
-      content: attr(data-tip);
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%; transform: translateX(-50%);
-      background: rgba(2,2,10,0.97);
-      border: 1px solid rgba(0,255,136,0.35);
-      color: var(--neon-green);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.58rem; letter-spacing: 1.5px;
-      padding: 3px 9px; border-radius: 3px;
-      white-space: nowrap; pointer-events: none; z-index: 200;
-      box-shadow: 0 0 10px rgba(0,255,136,0.12);
-    }
-    .skill-tag[data-tip]:hover::after {
-      content: '';
-      position: absolute; bottom: calc(100% + 2px); left: 50%;
-      transform: translateX(-50%);
-      border: 5px solid transparent;
-      border-top-color: rgba(0,255,136,0.35);
-      pointer-events: none; z-index: 200;
-    }
+    /* tooltip via JS (#skill-tip) — ::before/after blocked by clip-path */
 
     .skill-tag:hover {
       background: rgba(0, 255, 136, 0.15);
@@ -1728,6 +1707,22 @@
   .contact-link-dc:hover   { border-color: #5865f2; box-shadow: 0 0 14px rgba(88,101,242,0.2); }
   .contact-link-wa:hover   { border-color: #25d366; box-shadow: 0 0 14px rgba(37,211,102,0.2); }
 
+  /* ─── SKILL TOOLTIP (global, escapa do clip-path) ─── */
+  #skill-tip {
+    position: fixed; pointer-events: none; z-index: 500;
+    background: rgba(2,2,10,0.97);
+    border: 1px solid rgba(0,255,136,0.38);
+    color: var(--neon-green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 1.5px;
+    padding: 3px 10px; border-radius: 3px;
+    white-space: nowrap;
+    box-shadow: 0 0 10px rgba(0,255,136,0.14);
+    opacity: 0; transition: opacity 0.15s;
+    transform: translate(-50%, -100%);
+  }
+  #skill-tip.vis { opacity: 1; }
+
   /* ─── ARROWHEAD QUOTE ─── */
   .dev-philosophy {
     font-family: 'Share Tech Mono', monospace; font-size: 0.64rem;
@@ -2193,6 +2188,8 @@
     </div>
     <p class="footer-copy" data-i18n="footer-copy">© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE</p>
   </footer>
+
+  <div id="skill-tip"></div>
 
   <!-- ── Achievement toasts (pool of 4 for stacking) ── -->
   <div id="ach-toast" class="ach-toast">
@@ -3062,6 +3059,19 @@
     });
   }
   _updateSkillTips('pt'); // init
+
+  // Global tooltip (bypasses clip-path)
+  const _sTip = document.getElementById('skill-tip');
+  document.querySelectorAll('.skill-tag[data-years]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      const r = el.getBoundingClientRect();
+      _sTip.textContent = el.dataset.tip;
+      _sTip.style.left = (r.left + r.width / 2) + 'px';
+      _sTip.style.top  = (r.top - 8) + 'px';
+      _sTip.classList.add('vis');
+    });
+    el.addEventListener('mouseleave', () => _sTip.classList.remove('vis'));
+  });
 
   // ─── I18N ───
   let currentLang = 'pt';
