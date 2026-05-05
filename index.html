@@ -692,6 +692,29 @@
       letter-spacing: 1px;
       transition: all 0.3s;
       clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      position: relative;
+    }
+    .skill-tag[data-tip]:hover::before {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%; transform: translateX(-50%);
+      background: rgba(2,2,10,0.97);
+      border: 1px solid rgba(0,255,136,0.35);
+      color: var(--neon-green);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.58rem; letter-spacing: 1.5px;
+      padding: 3px 9px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none; z-index: 200;
+      box-shadow: 0 0 10px rgba(0,255,136,0.12);
+    }
+    .skill-tag[data-tip]:hover::after {
+      content: '';
+      position: absolute; bottom: calc(100% + 2px); left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: rgba(0,255,136,0.35);
+      pointer-events: none; z-index: 200;
     }
 
     .skill-tag:hover {
@@ -1619,18 +1642,21 @@
     transform: translateX(-50%) translateY(120px);
     width: 320px;
     border-color: rgba(191,0,255,0.85); border-left-color: var(--neon-purple); border-left-width: 4px;
-    box-shadow: 0 0 40px rgba(191,0,255,0.3), inset 0 0 24px rgba(191,0,255,0.07);
     cursor: pointer;
     transition: transform 0.5s cubic-bezier(.22,.68,0,1.12);
   }
   .ach-final.show {
     transform: translateX(-50%) translateY(0);
-    animation: achGlow 3.8s ease-in-out infinite;
+    animation: achGlow 4.2s ease-in-out infinite;
+    animation-fill-mode: both;
   }
-  .ach-final:hover { box-shadow: 0 0 55px rgba(191,0,255,0.45), inset 0 0 20px rgba(191,0,255,0.09); }
+  .ach-final:hover { filter: brightness(1.15); }
   @keyframes achGlow {
-    0%,100% { box-shadow: 0 0 20px rgba(191,0,255,0.16), inset 0 0 10px rgba(191,0,255,0.04); }
-    50%      { box-shadow: 0 0 48px rgba(191,0,255,0.38), 0 0 85px rgba(191,0,255,0.1), inset 0 0 18px rgba(191,0,255,0.07); }
+    0%   { box-shadow: 0 0 14px rgba(191,0,255,0.12), 0 0 0px  rgba(191,0,255,0.00); }
+    25%  { box-shadow: 0 0 28px rgba(191,0,255,0.26), 0 0 55px rgba(191,0,255,0.07); }
+    50%  { box-shadow: 0 0 52px rgba(191,0,255,0.46), 0 0 105px rgba(191,0,255,0.14); }
+    75%  { box-shadow: 0 0 28px rgba(191,0,255,0.26), 0 0 55px rgba(191,0,255,0.07); }
+    100% { box-shadow: 0 0 14px rgba(191,0,255,0.12), 0 0 0px  rgba(191,0,255,0.00); }
   }
   .ach-icon { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
   .ach-body { flex: 1; min-width: 0; }
@@ -1798,22 +1824,29 @@
           <p data-i18n="about-p2">Minha carreira passou por projetos no Brasil, Portugal, Miami e Canadá, incluindo experiências para <strong style="color:var(--neon-green)">Sony Music Entertainment</strong>, <strong style="color:var(--neon-green)">Nickelodeon</strong>, <strong style="color:var(--neon-green)">Paramount</strong>, <strong style="color:var(--neon-green)">Globo</strong>, <strong style="color:var(--neon-green)">Senna Park</strong> e outras marcas de entretenimento. Ao longo dessa jornada, atuei em <strong style="color:var(--neon-green)">gameplay, arquitetura Unity, backend</strong>, pipelines técnicos, publicação em lojas, SDKs e sistemas imersivos em tempo real.</p>
           <p data-i18n="about-p3">O que mais me move é programar jogos: criar mecânicas, resolver problemas complexos, dar vida a interações e construir experiências que realmente funcionem para o jogador. Para mim, limitação não é apenas obstáculo — é ponto de partida criativo. Gosto de encontrar caminhos técnicos para que a experiência aconteça.</p>
           <div class="skills-wrap">
-            <span class="skill-tag">Unity</span>
-            <span class="skill-tag">Unreal Engine 5</span>
-            <span class="skill-tag">C#</span>
-            <span class="skill-tag">C++</span>
-            <span class="skill-tag">Python</span>
-            <span class="skill-tag">VR / AR / XR</span>
-            <span class="skill-tag">OpenXR</span>
-            <span class="skill-tag">MRTK2</span>
-            <span class="skill-tag">WebGL</span>
-            <span class="skill-tag">Android SDK</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">PHP</span>
-            <span class="skill-tag">MySQL</span>
-            <span class="skill-tag">Docker</span>
-            <span class="skill-tag">PyTorch</span>
-            <span class="skill-tag">GitHub Actions</span>
+            <span class="skill-tag" data-years="11">Game Development</span>
+            <span class="skill-tag" data-years="10">Unity</span>
+            <span class="skill-tag" data-years="11">C#</span>
+            <span class="skill-tag" data-years="9">Git / GitHub</span>
+            <span class="skill-tag" data-years="10+">Backend</span>
+            <span class="skill-tag" data-years="7">Mobile</span>
+            <span class="skill-tag" data-years="6">VR</span>
+            <span class="skill-tag" data-years="6">AR / XR</span>
+            <span class="skill-tag" data-years="6">OpenXR</span>
+            <span class="skill-tag" data-years="6">WebGL</span>
+            <span class="skill-tag" data-years="6">GitHub Actions / CI-CD</span>
+            <span class="skill-tag" data-years="5">JavaScript</span>
+            <span class="skill-tag" data-years="4">Unreal Engine</span>
+            <span class="skill-tag" data-years="4">Tech Art</span>
+            <span class="skill-tag" data-years="4">Python</span>
+            <span class="skill-tag" data-years="3">Godot</span>
+            <span class="skill-tag" data-years="3">SDK Integration</span>
+            <span class="skill-tag" data-years="2">Docker</span>
+            <span class="skill-tag" data-years="2">.NET</span>
+            <span class="skill-tag" data-years="2">AWS</span>
+            <span class="skill-tag" data-years="2">App Publishing</span>
+            <span class="skill-tag" data-years="1+">AI / Computer Vision</span>
+            <span class="skill-tag" data-years="1">PHP</span>
           </div>
           <p class="dev-philosophy">// "A game for everyone is a game for no one" — Arrowhead Game Studios</p>
         </div>
@@ -3021,6 +3054,15 @@
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+  // ─── SKILL TIPS ───
+  function _updateSkillTips(lang) {
+    const suf = lang === 'pt' ? ' anos' : ' years';
+    document.querySelectorAll('.skill-tag[data-years]').forEach(el => {
+      el.dataset.tip = el.dataset.years + suf;
+    });
+  }
+  _updateSkillTips('pt'); // init
+
   // ─── I18N ───
   let currentLang = 'pt';
   const i18n = {
@@ -3230,6 +3272,9 @@
     // Reset subtitle engine with new phrases
     _phrases = [...t['typewriter']];
     _phraseIdx = 0;
+
+    // Update skill tag tooltips
+    _updateSkillTips(lang);
 
     // Update any toasts currently on screen
     _activeToasts.forEach(entry => {
