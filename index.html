@@ -1708,6 +1708,7 @@
       <li><a href="#about" data-i18n="nav-about">Sobre</a></li>
       <li><a href="#projects" data-i18n="nav-projects">Projetos</a></li>
       <li><a href="#experience" data-i18n="nav-exp">Experiência</a></li>
+      <li><a href="#" onclick="openContactPanel();return false;" data-i18n="nav-contact">Contato</a></li>
     </ul>
     <button id="lang-btn" class="lang-toggle" onclick="setLang(currentLang==='pt'?'en':'pt')">EN</button>
   </nav>
@@ -2945,6 +2946,7 @@
       'nav-about': 'Sobre',
       'nav-projects': 'Projetos',
       'nav-exp': 'Experiência',
+      'nav-contact': 'Contato',
       'hero-btn-projects': 'Ver Projetos',
       'about-label': '// 01 — SOBRE MIM',
       'about-p1': 'Desenvolvedor apaixonado por games com mais de <strong style="color:var(--neon-green)">10 anos de experiência</strong> em backend, game development e Unity, especializado em criar experiências imersivas e interativas com tecnologias de ponta.',
@@ -3011,6 +3013,7 @@
       'nav-about': 'About',
       'nav-projects': 'Projects',
       'nav-exp': 'Experience',
+      'nav-contact': 'Contact',
       'hero-btn-projects': 'View Projects',
       'about-label': '// 01 — ABOUT ME',
       'about-p1': 'Passionate game developer with over <strong style="color:var(--neon-green)">10 years of experience</strong> in backend, game development and Unity, specialized in creating immersive and interactive experiences with cutting-edge technologies.',
@@ -3109,8 +3112,6 @@
     _phrases = [...t['typewriter']];
     _phraseIdx = 0;
 
-    // Achievement: language switch
-    triggerAch('lang', '🌐', 'MULTILÍNGUE', 'Idioma alternado com sucesso', 10);
   }
 
   // ─── ACHIEVEMENT & XP SYSTEM ────────────────────────────────────────────
