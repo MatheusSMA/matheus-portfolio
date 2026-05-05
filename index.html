@@ -946,7 +946,8 @@
     .timeline-item::before {
       content: '';
       position: absolute;
-      left: -2.4rem;
+      /* center 8px dot on the 1px line: line.center = .timeline.left + 0.5px → dot.left = .timeline-item.left - 2rem - 3.5px */
+      left: calc(-2rem - 3.5px);
       top: 0.4rem;
       width: 8px;
       height: 8px;
@@ -958,11 +959,34 @@
     .timeline-item::after {
       content: '';
       position: absolute;
-      left: -2.1rem;
+      left: calc(-2rem + 4.5px); /* starts at dot right edge */
       top: 0.7rem;
-      width: 32px;
+      width: calc(2rem - 4.5px);
       height: 1px;
       background: rgba(0, 255, 136, 0.3);
+    }
+
+    /* energy pulse along the timeline line on bullet hit */
+    .tl-pulse {
+      position: absolute;
+      left: -0.5px;
+      width: 2px;
+      pointer-events: none;
+      background: linear-gradient(to bottom, transparent, rgba(140,255,200,1) 45%, rgba(0,255,136,1) 50%, rgba(140,255,200,1) 55%, transparent);
+      transform: translateY(-50%);
+      animation: tlPulse 1.15s cubic-bezier(.2,.55,.2,1) forwards;
+      will-change: height, opacity, box-shadow;
+      filter: blur(0.4px);
+    }
+    @keyframes tlPulse {
+      0%   { height: 2px;   opacity: 1;
+             box-shadow: 0 0 18px rgba(0,255,136,1), 0 0 38px rgba(0,255,136,0.75), 0 0 70px rgba(0,255,136,0.35); }
+      25%  { height: 110px; opacity: 1;
+             box-shadow: 0 0 22px rgba(0,255,136,0.85), 0 0 50px rgba(0,255,136,0.5),  0 0 100px rgba(0,255,136,0.22); }
+      55%  { height: 220px; opacity: 0.7;
+             box-shadow: 0 0 16px rgba(0,255,136,0.5), 0 0 40px rgba(0,255,136,0.25); }
+      100% { height: 360px; opacity: 0;
+             box-shadow: 0 0 0 rgba(0,255,136,0); }
     }
 
     .timeline-period {
@@ -1807,6 +1831,100 @@
   }
   .contact-esc:hover { color: var(--neon-purple); }
 
+  /* ═══════════════ NAVE & BULLETS ═══════════════ */
+  #nave {
+    position: fixed;
+    left: 14px;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    z-index: 50;
+    pointer-events: none;
+    /* JS sets translate3d(0, shipY - 18px, 0) each frame */
+    transform: translate3d(0, 50vh, 0);
+    filter: drop-shadow(0 0 5px rgba(0,255,136,0.55));
+    opacity: 0.85;
+    will-change: transform;
+  }
+  #nave .nave-body {
+    animation: nave-idle 3.6s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes nave-idle {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-2.5px); }
+  }
+  #nave .nave-thrust {
+    animation: nave-thrust 0.4s ease-in-out infinite alternate;
+    transform-origin: center;
+  }
+  @keyframes nave-thrust {
+    from { opacity: 0.55; transform: scaleX(0.85); }
+    to   { opacity: 1;    transform: scaleX(1.15); }
+  }
+
+  .nave-bullet {
+    position: absolute;   /* page coords — falls behind on scroll */
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(0,255,136,0.65);
+    box-shadow: 0 0 3px rgba(0,255,136,0.45);
+    pointer-events: none;
+    z-index: 49;
+    will-change: left;
+  }
+  .nave-impact {
+    position: fixed;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(0,255,136,0.7);
+    box-shadow: 0 0 10px rgba(0,255,136,0.55);
+    pointer-events: none;
+    z-index: 49;
+    animation: impactBurst 0.3s ease-out forwards;
+  }
+  @keyframes impactBurst {
+    from { transform: translate(-50%,-50%) scale(0.5); opacity: 0.85; }
+    to   { transform: translate(-50%,-50%) scale(2.0); opacity: 0;    }
+  }
+
+  /* fade-ahead: items to the left of a hovered project on same row */
+  .bullet-fade-ahead {
+    opacity: 0.5 !important;
+    transition: opacity 0.28s ease-out;
+  }
+
+  /* hit effects */
+  @keyframes bullet-hit-photo-anim {
+    0%,100% { transform: scale(1); filter: brightness(1) saturate(1); }
+    30%     { transform: scale(1.035); filter: brightness(1.35) saturate(1.2); }
+  }
+  #profile-photo.bullet-hit-photo {
+    animation: bullet-hit-photo-anim 0.5s ease-out;
+  }
+  @keyframes bullet-hit-card-anim {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(4px); }
+    50%  { transform: translateX(-2px); }
+    80%  { transform: translateX(1px); }
+    100% { transform: translateX(0); }
+  }
+  .bullet-hit-card {
+    animation: bullet-hit-card-anim 0.4s ease-out;
+  }
+  /* glitch burst on hero name — overrides existing glitch briefly */
+  @keyframes bullet-hit-glitch-anim {
+    0%   { transform: translate(0,0); }
+    15%  { transform: translate(-4px, 1px) skewX(-3deg); }
+    30%  { transform: translate(3px, -2px) skewX(2deg); }
+    45%  { transform: translate(-2px, 2px); }
+    60%  { transform: translate(2px, 0) skewX(-1deg); }
+    100% { transform: translate(0,0); }
+  }
+  .hero-name.bullet-hit-glitch {
+    animation: bullet-hit-glitch-anim 0.42s steps(8, end);
+  }
+
   </style>
 </head>
 
@@ -1815,6 +1933,23 @@
   <canvas id="particles-canvas"></canvas>
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
+
+  <!-- ═══════════════ NAVE ═══════════════ -->
+  <svg id="nave" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g class="nave-body">
+      <!-- thruster trail behind -->
+      <g class="nave-thrust">
+        <ellipse cx="6" cy="20" rx="5" ry="1.6" fill="rgba(0,255,136,0.55)"/>
+        <ellipse cx="3" cy="20" rx="3" ry="0.9" fill="rgba(0,229,255,0.7)"/>
+      </g>
+      <!-- ship body: arrow pointing right -->
+      <polygon points="10,7 34,20 10,33 16,20"
+               fill="rgba(0,255,136,0.18)"
+               stroke="#00ff88" stroke-width="1.4" stroke-linejoin="round"/>
+      <!-- cockpit -->
+      <circle cx="20" cy="20" r="2.4" fill="#00e5ff" opacity="0.9"/>
+    </g>
+  </svg>
 
   <!-- ═══════════════ NAVBAR ═══════════════ -->
   <nav>
@@ -2242,7 +2377,7 @@
         Email
       </a>
     </div>
-    <p class="footer-copy" data-i18n="footer-copy">© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE</p>
+    <p class="footer-copy" data-i18n="footer-copy">© 2026 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE</p>
   </footer>
 
   <div id="skill-tip"></div>
@@ -3299,7 +3434,7 @@
       'ed-bm': 'Empresa portuguesa — desenvolvimento de jogo NFT para WEB e mobile com Unity, integração de Marketplace e Blockchain.',
       'ed-go': 'Plataforma de cotação de fretes online — ASP.NET MVC 3, C#, MySQL, HTML/CSS/JS e versionamento Microsoft Azure.',
       'ed-perim': 'Primeira experiência internacional — projeto encomendado pela Marathon, ambas em Montreal/Canadá. Software em Unity/C# para designers profissionais construírem gavetas planejadas. Reuniões semanais em inglês, método Kanban e build WebGL.',
-      'footer-copy': '© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE',
+      'footer-copy': '© 2026 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE',
       'typewriter': ['Desenvolvedor de Games | Programador', 'Unity & Unreal Engine 5', 'Especialista VR / AR / XR', 'Tech Art & Experiências Interativas'],
       'ticker-rg': 'Senna Park &nbsp;·&nbsp; Museu Olímpico &nbsp;·&nbsp; Wicked &nbsp;·&nbsp; Bob Esponja &nbsp;·&nbsp; Firjan &nbsp;·&nbsp; Mattel &nbsp;·&nbsp; Sabesp &nbsp;·&nbsp; Parque da Mônica &nbsp;·&nbsp; GEX Globo &nbsp;·&nbsp; La Fontaine &nbsp;·&nbsp; Sesi Lab &nbsp;·&nbsp; MAC &nbsp;·&nbsp; Peppa Pig &nbsp;·&nbsp; Sírio Libanês &nbsp;·&nbsp; Viva Volpi &nbsp;·&nbsp; Hello Kitty &nbsp;&nbsp;&nbsp;&nbsp; Senna Park &nbsp;·&nbsp; Museu Olímpico &nbsp;·&nbsp; Wicked &nbsp;·&nbsp; Bob Esponja &nbsp;·&nbsp; Firjan &nbsp;·&nbsp; Mattel &nbsp;·&nbsp; Sabesp &nbsp;·&nbsp; Parque da Mônica &nbsp;·&nbsp; GEX Globo &nbsp;·&nbsp; La Fontaine &nbsp;·&nbsp; Sesi Lab &nbsp;·&nbsp; MAC &nbsp;·&nbsp; Peppa Pig &nbsp;·&nbsp; Sírio Libanês &nbsp;·&nbsp; Viva Volpi &nbsp;·&nbsp; Hello Kitty &nbsp;&nbsp;&nbsp;&nbsp;',
       'modal-role-rg': 'Tech Art & Game Developer · Dez 2023 – Atualmente',
@@ -3384,7 +3519,7 @@
       'ed-bm': 'Portuguese company — development of NFT game for WEB and mobile with Unity, Marketplace and Blockchain integration.',
       'ed-go': 'Online freight quotation platform — ASP.NET MVC 3, C#, MySQL, HTML/CSS/JS and Microsoft Azure versioning.',
       'ed-perim': 'First international experience — project commissioned by Marathon, both based in Montreal/Canada. Software in Unity/C# for professional designers to build planned drawers. Weekly meetings in English, Kanban method and WebGL build.',
-      'footer-copy': '© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE',
+      'footer-copy': '© 2026 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE',
       'typewriter': ['Game Developer | Programmer', 'Unity & Unreal Engine 5', 'VR / AR / XR Specialist', 'Tech Art & Interactive Experiences'],
       'ticker-rg': 'Senna Park &nbsp;·&nbsp; Olympic Museum &nbsp;·&nbsp; Wicked &nbsp;·&nbsp; SpongeBob &nbsp;·&nbsp; Firjan &nbsp;·&nbsp; Mattel &nbsp;·&nbsp; Sabesp &nbsp;·&nbsp; Monica\'s Gang Park &nbsp;·&nbsp; GEX Globo &nbsp;·&nbsp; La Fontaine &nbsp;·&nbsp; Sesi Lab &nbsp;·&nbsp; MAC &nbsp;·&nbsp; Peppa Pig &nbsp;·&nbsp; Sírio Libanês Hospital &nbsp;·&nbsp; Viva Volpi &nbsp;·&nbsp; Hello Kitty &nbsp;&nbsp;&nbsp;&nbsp; Senna Park &nbsp;·&nbsp; Olympic Museum &nbsp;·&nbsp; Wicked &nbsp;·&nbsp; SpongeBob &nbsp;·&nbsp; Firjan &nbsp;·&nbsp; Mattel &nbsp;·&nbsp; Sabesp &nbsp;·&nbsp; Monica\'s Gang Park &nbsp;·&nbsp; GEX Globo &nbsp;·&nbsp; La Fontaine &nbsp;·&nbsp; Sesi Lab &nbsp;·&nbsp; MAC &nbsp;·&nbsp; Peppa Pig &nbsp;·&nbsp; Sírio Libanês Hospital &nbsp;·&nbsp; Viva Volpi &nbsp;·&nbsp; Hello Kitty &nbsp;&nbsp;&nbsp;&nbsp;',
       'modal-role-rg': 'Tech Art & Game Developer · Dec 2023 – Present',
@@ -3607,6 +3742,242 @@
     if (id === 'real-games')
       setTimeout(() => triggerAch('real-games', '🏆', 10), 700);
   };
+
+  // ═══════════════ NAVE & BULLETS ═══════════════
+  const _nave = document.getElementById('nave');
+  const _heroNameEl = document.querySelector('.hero-name');
+  const _hoverState = { card: null };
+
+  // ─── Ship Y position (lerped each frame) ───
+  function _computeShipTargetY() {
+    const center = window.innerHeight / 2;
+    if (_heroNameEl) {
+      const heroR = _heroNameEl.getBoundingClientRect();
+      // aim slightly above center of hero name (~40% from top, where the upper part of "M" sits)
+      const heroAim = heroR.top + heroR.height * 0.4;
+      // off-screen → just center
+      if (heroR.bottom < 0 || heroR.top > window.innerHeight) return center;
+      // hero is below center → align with M
+      if (heroAim >= center) return heroAim;
+      // hero scrolling past → blend toward viewport center
+      const distAbove = center - heroAim;
+      const blendRange = heroR.height * 1.6;
+      const t = Math.min(1, distAbove / blendRange);
+      return heroAim + (center - heroAim) * t;
+    }
+    return center;
+  }
+
+  let _shipY = _computeShipTargetY();
+  let _lastSetShipY = -9999;
+  function _shipTick() {
+    const tgt = _computeShipTargetY();
+    _shipY += (tgt - _shipY) * 0.22;
+    if (Math.abs(tgt - _shipY) < 0.25) _shipY = tgt;
+    if (Math.abs(_shipY - _lastSetShipY) > 0.05) {
+      // translate3d for GPU + no layout thrash; -18px = half of 36px ship height
+      _nave.style.transform = `translate3d(0, ${_shipY - 18}px, 0)`;
+      _lastSetShipY = _shipY;
+    }
+    requestAnimationFrame(_shipTick);
+  }
+  requestAnimationFrame(_shipTick);
+
+  // ─── Hover tracking + fade-ahead on project grid ───
+  function _applyFadeAhead(el) {
+    const parent = el.parentElement;
+    if (!parent) return;
+    if (!parent.classList.contains('projects-grid') && !parent.classList.contains('company-grid')) return;
+    const rT = el.getBoundingClientRect();
+    parent.querySelectorAll('.project-card, .company-card').forEach(s => {
+      if (s === el) return;
+      const r = s.getBoundingClientRect();
+      if (Math.abs(r.top - rT.top) < 40 && r.left < rT.left) {
+        s.classList.add('bullet-fade-ahead');
+      }
+    });
+  }
+  function _clearFadeAhead() {
+    document.querySelectorAll('.bullet-fade-ahead').forEach(s => s.classList.remove('bullet-fade-ahead'));
+  }
+
+  document.querySelectorAll('.project-card, .company-card, .timeline-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      _hoverState.card = el;
+      _applyFadeAhead(el);
+    });
+    el.addEventListener('mouseleave', () => {
+      if (_hoverState.card === el) _hoverState.card = null;
+      _clearFadeAhead();
+    });
+  });
+
+  // ─── Targets (page coords) ───
+  function _getTargets() {
+    const targets = [];
+    const sx = window.scrollX, sy = window.scrollY;
+    // Hero name — only first letter "M" (left ~13% of width or 0.7em)
+    if (_heroNameEl) {
+      const r = _heroNameEl.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) {
+        const mWidth = Math.min(r.height * 0.75, r.width * 0.14);
+        targets.push({
+          el: _heroNameEl, kind: 'glitch',
+          pageLeft:   r.left + sx,
+          pageRight:  r.left + mWidth + sx,
+          pageTop:    r.top + sy,
+          pageBottom: r.bottom + sy,
+        });
+      }
+    }
+    // Profile photo — circle border collision
+    const photoEl = document.getElementById('profile-photo');
+    if (photoEl) {
+      const r = photoEl.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) {
+        const cR = Math.min(r.width, r.height) / 2;
+        targets.push({
+          el: photoEl, kind: 'photo', circular: true,
+          pageLeft:   r.left + sx,                        // bullet enters circle here at most
+          pageRight:  r.right + sx,
+          pageTop:    r.top + sy,
+          pageBottom: r.bottom + sy,
+          cx:         r.left + r.width  / 2 + sx,
+          cy:         r.top  + r.height / 2 + sy,
+          radius:     cR,
+        });
+      }
+    }
+    // Hovered card — left-edge collision
+    if (_hoverState.card) {
+      const r = _hoverState.card.getBoundingClientRect();
+      targets.push({
+        el: _hoverState.card, kind: 'card',
+        pageLeft:   r.left + sx,
+        pageRight:  r.left + 14 + sx, // thin strip on the left edge
+        pageTop:    r.top + sy,
+        pageBottom: r.bottom + sy,
+      });
+    }
+    // Timeline vertical line — always a target while visible (triggers energy pulse)
+    const tlEl = document.querySelector('.timeline');
+    if (tlEl) {
+      const r = tlEl.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) {
+        targets.push({
+          el: tlEl, kind: 'tl-line',
+          pageLeft:   r.left + sx,
+          pageRight:  r.left + 5 + sx, // 1px line + tolerance
+          pageTop:    r.top + sy,
+          pageBottom: r.bottom + sy,
+        });
+      }
+    }
+    targets.sort((a, b) => a.pageLeft - b.pageLeft); // closest first
+    return targets;
+  }
+
+  function _spawnImpactViewport(vx, vy) {
+    const i = document.createElement('div');
+    i.className = 'nave-impact';
+    i.style.left = vx + 'px';
+    i.style.top  = vy + 'px';
+    document.body.appendChild(i);
+    setTimeout(() => i.remove(), 340);
+  }
+
+  function _energyPulseTimeline(pageY) {
+    const tl = document.querySelector('.timeline');
+    if (!tl) return;
+    const tlR = tl.getBoundingClientRect();
+    const localY = (pageY - window.scrollY) - tlR.top;
+    if (localY < -10 || localY > tlR.height + 10) return;
+    const p = document.createElement('div');
+    p.className = 'tl-pulse';
+    p.style.top = localY + 'px';
+    tl.appendChild(p);
+    setTimeout(() => p.remove(), 1200);
+  }
+
+  function _hitTarget(tgt, hitPageX, hitPageY) {
+    if (tgt.kind === 'tl-line') {
+      _energyPulseTimeline(hitPageY);
+      _spawnImpactViewport(hitPageX - window.scrollX, hitPageY - window.scrollY);
+      return;
+    }
+    const cls = tgt.kind === 'photo'  ? 'bullet-hit-photo'
+              : tgt.kind === 'glitch' ? 'bullet-hit-glitch'
+              :                         'bullet-hit-card';
+    tgt.el.classList.remove(cls);
+    void tgt.el.offsetWidth;
+    tgt.el.classList.add(cls);
+    setTimeout(() => tgt.el.classList.remove(cls), 520);
+    _spawnImpactViewport(hitPageX - window.scrollX, hitPageY - window.scrollY);
+    if (tgt.kind === 'card' && tgt.el.classList.contains('timeline-item')) {
+      _energyPulseTimeline(hitPageY);
+    }
+  }
+
+  // ─── Shoot straight horizontal ───
+  function _shoot() {
+    if (document.hidden) { _scheduleNext(); return; }
+    const naveR = _nave.getBoundingClientRect();
+    const startPageX = naveR.right - 2 + window.scrollX;
+    const startPageY = naveR.top + naveR.height / 2 + window.scrollY;
+
+    const bullet = document.createElement('div');
+    bullet.className = 'nave-bullet';
+    bullet.style.left = (startPageX - 2.5) + 'px';
+    bullet.style.top  = (startPageY - 2.5) + 'px';
+    document.body.appendChild(bullet);
+
+    const speed = 0.32; // px/ms — bem mais devagar
+    let t0 = null;
+
+    function step(ts) {
+      if (!t0) t0 = ts;
+      const dt = ts - t0;
+      const curX = startPageX + dt * speed;
+      bullet.style.left = (curX - 2.5) + 'px';
+
+      // Collision check (closest target first)
+      const targets = _getTargets();
+      for (const tgt of targets) {
+        if (curX < tgt.pageLeft) continue;        // not reached yet
+        if (curX > tgt.pageRight + 4) continue;   // already passed (shouldn't hit "back side")
+        if (startPageY < tgt.pageTop || startPageY > tgt.pageBottom) continue;
+        let hitX = tgt.pageLeft;
+        if (tgt.circular) {
+          // Refine: bullet must be inside the circle at its current Y
+          const dy = startPageY - tgt.cy;
+          if (Math.abs(dy) > tgt.radius) continue;
+          const xLeft = tgt.cx - Math.sqrt(tgt.radius * tgt.radius - dy * dy);
+          if (curX < xLeft) continue;
+          hitX = xLeft; // hit point on circle border at this Y
+        }
+        bullet.remove();
+        _hitTarget(tgt, hitX, startPageY);
+        return;
+      }
+
+      // Off-screen check (right side)
+      if (curX > window.scrollX + window.innerWidth + 30) {
+        bullet.remove();
+        return;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    _scheduleNext();
+  }
+
+  let _autoShootTimer = null;
+  function _scheduleNext() {
+    clearTimeout(_autoShootTimer);
+    const delay = 4500 + Math.random() * 4000; // 4.5 – 8.5 s
+    _autoShootTimer = setTimeout(_shoot, delay);
+  }
+  setTimeout(_shoot, 3000);
 
 </script>
 
