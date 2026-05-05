@@ -165,7 +165,18 @@
       width: 100%;
     }
 
-    /* ─── LANG TOGGLE ─── */
+    /* ─── LANG FLAGS ─── */
+    .lang-flags { display: flex; gap: 4px; align-items: center; }
+    .flag-btn {
+      background: none; border: 1px solid transparent; border-radius: 5px;
+      font-size: 1.35rem; line-height: 1; padding: 3px 5px;
+      cursor: pointer; transition: opacity 0.2s, border-color 0.2s, transform 0.15s;
+      opacity: 0.38; filter: grayscale(40%);
+    }
+    .flag-btn:hover  { opacity: 0.8; filter: none; }
+    .flag-btn.active { opacity: 1; filter: none; border-color: rgba(0,255,136,0.45); transform: scale(1.1); }
+
+    /* ─── LANG TOGGLE (kept for fallback) ─── */
     .lang-toggle {
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.7rem;
@@ -1722,7 +1733,10 @@
       <li><a href="#experience" data-i18n="nav-exp">Experiência</a></li>
       <li><a href="#" onclick="openContactPanel();return false;" data-i18n="nav-contact">Contato</a></li>
     </ul>
-    <button id="lang-btn" class="lang-toggle" onclick="setLang(currentLang==='pt'?'en':'pt')">EN</button>
+    <div class="lang-flags">
+      <button class="flag-btn active" id="flag-pt" onclick="setLang('pt')" title="Português (BR)">🇧🇷</button>
+      <button class="flag-btn"        id="flag-en" onclick="setLang('en')" title="English (US)">🇺🇸</button>
+    </div>
   </nav>
 
   <!-- XP Progress Bar -->
@@ -1748,7 +1762,7 @@
   <section id="about">
     <div class="section-inner">
       <p class="section-label reveal" data-i18n="about-label">// 01 — SOBRE MIM</p>
-      <h2 class="section-title reveal">About Me</h2>
+      <h2 class="section-title reveal" data-i18n="section-about">Sobre Mim</h2>
       <div class="about-grid">
         <div class="about-photo-wrap reveal">
           <!-- === TROQUE o src abaixo pela sua foto real === -->
@@ -1791,7 +1805,7 @@
   <section id="projects">
     <div class="section-inner">
       <p class="section-label reveal" data-i18n="proj-label">// 02 — PROJETOS</p>
-      <h2 class="section-title reveal">Projects</h2>
+      <h2 class="section-title reveal" data-i18n="section-projects">Projetos</h2>
 
       <!-- EMPRESA: CARDS CLICÁVEIS COM POPUP -->
       <div class="projects-category reveal">
@@ -2017,7 +2031,7 @@
   <section id="experience">
     <div class="section-inner">
       <p class="section-label reveal" data-i18n="exp-label">// 03 — EXPERIÊNCIA</p>
-      <h2 class="section-title reveal">Experience</h2>
+      <h2 class="section-title reveal" data-i18n="section-exp">Experiência</h2>
       <div class="timeline">
 
         <div class="timeline-item reveal">
@@ -2142,9 +2156,9 @@
   <div id="ach-final" class="ach-toast ach-final" onclick="openContactPanel()">
     <div class="ach-icon">⭐</div>
     <div class="ach-body">
-      <div class="ach-badge">// PERFIL COMPLETO</div>
-      <div class="ach-title">FULL PROFILE UNLOCKED</div>
-      <div class="ach-desc">Destrinchou tudo — clique para conectar</div>
+      <div class="ach-badge" data-i18n="ach-final-badge">// PERFIL COMPLETO</div>
+      <div class="ach-title" data-i18n="ach-final-title">PERFIL DESBLOQUEADO</div>
+      <div class="ach-desc" data-i18n="ach-final-desc">Destrinchou tudo — clique para conectar</div>
     </div>
     <div class="ach-xp">→</div>
   </div>
@@ -2959,6 +2973,13 @@
       'nav-projects': 'Projetos',
       'nav-exp': 'Experiência',
       'nav-contact': 'Contato',
+      'section-about': 'Sobre Mim',
+      'section-projects': 'Projetos',
+      'section-exp': 'Experiência',
+      'ach-badge': '// CONQUISTA DESBLOQUEADA',
+      'ach-final-badge': '// PERFIL COMPLETO',
+      'ach-final-title': 'PERFIL DESBLOQUEADO',
+      'ach-final-desc': 'Destrinchou tudo — clique para conectar',
       'hero-btn-projects': 'Ver Projetos',
       'about-label': '// 01 — SOBRE MIM',
       'about-p1': 'Desenvolvedor apaixonado por games com mais de <strong style="color:var(--neon-green)">10 anos de experiência</strong> em backend, game development e Unity, especializado em criar experiências imersivas e interativas com tecnologias de ponta.',
@@ -3026,6 +3047,13 @@
       'nav-projects': 'Projects',
       'nav-exp': 'Experience',
       'nav-contact': 'Contact',
+      'section-about': 'About Me',
+      'section-projects': 'Projects',
+      'section-exp': 'Experience',
+      'ach-badge': '// ACHIEVEMENT UNLOCKED',
+      'ach-final-badge': '// FULL PROFILE',
+      'ach-final-title': 'FULL PROFILE UNLOCKED',
+      'ach-final-desc': 'Explored everything — click to connect',
       'hero-btn-projects': 'View Projects',
       'about-label': '// 01 — ABOUT ME',
       'about-p1': 'Passionate game developer with over <strong style="color:var(--neon-green)">10 years of experience</strong> in backend, game development and Unity, specialized in creating immersive and interactive experiences with cutting-edge technologies.',
@@ -3100,7 +3128,10 @@
     currentLang = lang;
     const t = i18n[lang];
     document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
-    document.getElementById('lang-btn').textContent = lang === 'pt' ? 'EN' : 'PT';
+    // Update active flag
+    document.querySelectorAll('.flag-btn').forEach(b => b.classList.remove('active'));
+    const fl = document.getElementById('flag-' + lang);
+    if (fl) fl.classList.add('active');
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
@@ -3151,6 +3182,7 @@
     const { icon, title, desc, xp } = _achQueue.shift();
     const toast = document.getElementById('ach-toast');
     document.getElementById('ach-icon').textContent  = icon;
+    document.querySelector('#ach-toast .ach-badge').textContent = i18n[currentLang]['ach-badge'] || '// CONQUISTA';
     document.getElementById('ach-title').textContent = title;
     document.getElementById('ach-desc').textContent  = desc;
     document.getElementById('ach-xp').textContent    = '+' + xp + ' XP';
@@ -3190,7 +3222,7 @@
     if (!el) return;
     const obs = new IntersectionObserver(es => {
       if (es[0].isIntersecting) { triggerAch(id, icon, title, desc, xp); obs.disconnect(); }
-    }, { threshold: 0, rootMargin: '0px 0px -30% 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px -45% 0px' });
     obs.observe(el);
   }
   _watchSection('#about',      'about',   '👤', 'PERFIL DESCOBERTO',   'Seção Sobre desbloqueada',           20);
