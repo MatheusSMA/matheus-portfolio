@@ -704,13 +704,9 @@
 
     /* ─── SKILLS CHART ─── */
     #skills-chart {
-      overflow: hidden; max-height: 0; opacity: 0;
-      transition: max-height 0.55s cubic-bezier(.22,.68,0,1.12), opacity 0.3s;
-      margin-top: 0;
+      display: none; margin-top: 1.4rem;
     }
-    #skills-chart.chart-open {
-      max-height: 800px; opacity: 1; margin-top: 1.4rem;
-    }
+    #skills-chart.chart-open { display: block; }
     .chart-row {
       display: flex; align-items: center; gap: 0.75rem;
       margin-bottom: 0.42rem;
@@ -3117,8 +3113,11 @@
 
   function _renderChart() {
     _chartEl.innerHTML = '';
-    if (_activeSkills.size === 0) { _chartEl.classList.remove('chart-open'); return; }
-    _chartEl.classList.add('chart-open');
+    if (_activeSkills.size === 0) {
+      _chartEl.classList.remove('chart-open');
+      return;
+    }
+    // Build rows first, then show
     const sorted = [..._activeSkills].sort((a, b) => _parseYrs(b.dataset.years) - _parseYrs(a.dataset.years));
     const maxY = _parseYrs(sorted[0].dataset.years);
     sorted.forEach((el, i) => {
@@ -3132,7 +3131,8 @@
         `<span class="chart-yrs">${el.dataset.tip || el.dataset.years}</span>`;
       _chartEl.appendChild(row);
     });
-    // Trigger width transitions after paint
+    _chartEl.classList.add('chart-open'); // show after DOM is populated
+    // Trigger bar width transitions
     requestAnimationFrame(() => requestAnimationFrame(() => {
       _chartEl.querySelectorAll('.chart-bar-fill').forEach(b => { b.style.width = b.dataset.pct + '%'; });
     }));
