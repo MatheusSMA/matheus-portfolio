@@ -3180,13 +3180,21 @@
     // Reset subtitle engine with new phrases
     _phrases = [...t['typewriter']];
     _phraseIdx = 0;
+
+    // Update toast text if one is currently on screen
+    if (_achBusy && _currentAchId) {
+      document.querySelector('#ach-toast .ach-badge').textContent = t['ach-badge'] || '// CONQUISTA';
+      document.getElementById('ach-title').textContent = t['ach-' + _currentAchId + '-title'] || _currentAchId.toUpperCase();
+      document.getElementById('ach-desc').textContent  = t['ach-' + _currentAchId + '-desc'] || '';
+    }
+
     triggerAch('lang', '🌐', 10);
   }
 
   // ─── ACHIEVEMENT & XP SYSTEM ────────────────────────────────────────────
 
   const _achUnlocked = new Set();
-  let _xp = 0, _achQueue = [], _achBusy = false;
+  let _xp = 0, _achQueue = [], _achBusy = false, _currentAchId = null;
 
   function _addXP(n) {
     _xp = Math.min(_xp + n, 100);
@@ -3206,6 +3214,7 @@
     if (_achBusy || !_achQueue.length) return;
     _achBusy = true;
     const { icon, id, xp } = _achQueue.shift();
+    _currentAchId = id;
     const t = i18n[currentLang];
     const toast = document.getElementById('ach-toast');
     document.getElementById('ach-icon').textContent  = icon;
@@ -3216,7 +3225,7 @@
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => { _achBusy = false; _nextAch(); }, 480);
+      setTimeout(() => { _achBusy = false; _currentAchId = null; _nextAch(); }, 480);
     }, 3800);
   }
 
