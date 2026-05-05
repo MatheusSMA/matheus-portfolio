@@ -966,27 +966,49 @@
       background: rgba(0, 255, 136, 0.3);
     }
 
-    /* energy pulse along the timeline line on bullet hit */
+    /* energy pulse along the timeline line on bullet hit
+       — single radial gradient (one rasterization), pure greens.
+       Scale keeps growing past the opacity-fade end → no perceived "stop". */
     .tl-pulse {
       position: absolute;
-      left: -0.5px;
-      width: 2px;
+      left: -18px;
+      width: 37px;
+      height: 820px;
+      margin-top: -410px;
       pointer-events: none;
-      background: linear-gradient(to bottom, transparent, rgba(140,255,200,1) 45%, rgba(0,255,136,1) 50%, rgba(140,255,200,1) 55%, transparent);
-      transform: translateY(-50%);
-      animation: tlPulse 1.15s cubic-bezier(.2,.55,.2,1) forwards;
-      will-change: height, opacity, box-shadow;
-      filter: blur(0.4px);
+      background: radial-gradient(
+        ellipse 11% 50% at 50% 50%,
+        rgba(140,255,190,1)   0%,
+        rgba(70,255,165,1)    4%,
+        rgba(0,255,136,0.95)  9%,
+        rgba(0,255,136,0.6)  20%,
+        rgba(0,255,136,0.3)  38%,
+        rgba(0,255,136,0.12) 58%,
+        rgba(0,255,136,0.04) 76%,
+        transparent          92%
+      );
+      transform: scaleY(0.1);
+      transform-origin: center;
+      opacity: 0;
+      /* Two animations: scale gets full smooth cubic-bezier (single segment),
+         opacity gets a separate curve. With multi-keyframe @keyframes, browsers
+         apply the timing function PER segment, which causes the "stepped" feel.
+         By using only 2 keyframes per animation, the bezier interpolates as a
+         single continuous curve from start to end → truly fluid. */
+      animation:
+        tlPulseScale 1.55s cubic-bezier(.18,.55,.30,1)  forwards,
+        tlPulseFade  1.55s cubic-bezier(.55,.06,.7,.4)  forwards;
+      will-change: transform, opacity;
+      contain: layout paint;
     }
-    @keyframes tlPulse {
-      0%   { height: 2px;   opacity: 1;
-             box-shadow: 0 0 18px rgba(0,255,136,1), 0 0 38px rgba(0,255,136,0.75), 0 0 70px rgba(0,255,136,0.35); }
-      25%  { height: 110px; opacity: 1;
-             box-shadow: 0 0 22px rgba(0,255,136,0.85), 0 0 50px rgba(0,255,136,0.5),  0 0 100px rgba(0,255,136,0.22); }
-      55%  { height: 220px; opacity: 0.7;
-             box-shadow: 0 0 16px rgba(0,255,136,0.5), 0 0 40px rgba(0,255,136,0.25); }
-      100% { height: 360px; opacity: 0;
-             box-shadow: 0 0 0 rgba(0,255,136,0); }
+    @keyframes tlPulseScale {
+      from { transform: scaleY(0.1);  }
+      to   { transform: scaleY(1.10); }
+    }
+    @keyframes tlPulseFade {
+      0%   { opacity: 0; }
+      6%   { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .timeline-period {
@@ -1164,6 +1186,27 @@
       .nav-links {
         display: none;
       }
+
+      /* No custom cursor on touch / small screens */
+      body, a, button, input, textarea, .skill-tag, .project-card, .company-card,
+      .timeline-item, .contact-link, .nav-link, .modal-close, .lang-flags button,
+      .flag-btn, .contact-esc, .footer-link {
+        cursor: auto !important;
+      }
+      #cursor, #cursor-ring { display: none !important; }
+
+      /* No nave on mobile (no aiming, no mouse hover) */
+      #nave, .nave-bullet, .nave-impact, .tl-pulse { display: none !important; }
+
+      /* Final achievement: on mobile it goes through the regular toast queue,
+         so the centered modal is hidden */
+      .ach-final { display: none !important; }
+
+      /* Hero "Contato" button visible on mobile (replaces nav link).
+         Higher specificity needed because the base rule lives below in source order. */
+      .hero-buttons .btn.hero-btn-contact { display: inline-flex; }
+      /* Stack hero buttons in a single column on mobile */
+      .hero-buttons { flex-direction: column; align-items: stretch; }
     }
 
     /* ─── COMPANY CARDS ─── */
@@ -1735,6 +1778,31 @@
   }
   .ach-final .ach-xp { color: var(--neon-purple); font-size: 1.1rem; align-self: center; }
 
+  /* Hero "Contato" button — shown only on mobile (desktop has it in nav) */
+  .btn.hero-btn-contact { display: none; border-color: rgba(191,0,255,0.55); color: var(--neon-purple); }
+  .btn.hero-btn-contact::before { background: rgba(191,0,255,0.12); }
+  .btn.hero-btn-contact:hover { color: #fff; border-color: var(--neon-purple); }
+  .btn.hero-btn-contact.nav-contact-pulse {
+    animation: heroContactPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes heroContactPulse {
+    0%,100% { box-shadow: 0 0 8px rgba(191,0,255,0.15);  border-color: rgba(191,0,255,0.55); }
+    50%     { box-shadow: 0 0 22px rgba(191,0,255,0.55), 0 0 44px rgba(191,0,255,0.25); border-color: var(--neon-purple); }
+  }
+
+  /* Toast: purple variant for the final achievement on mobile */
+  .ach-toast.is-final {
+    border-color: rgba(191,0,255,0.85);
+    border-left-color: var(--neon-purple);
+    border-left-width: 4px;
+  }
+  .ach-toast.is-final .ach-badge { color: var(--neon-purple); }
+  .ach-toast.is-final .ach-xp    { color: var(--neon-purple); }
+  .ach-toast.is-final.show {
+    animation: achGlow 4.2s ease-in-out infinite;
+    animation-fill-mode: both;
+  }
+
   /* ─── NAV CONTACT PULSE ─── */
   @keyframes navContactGlow {
     0%,100% { color: var(--text); text-shadow: none; }
@@ -1970,6 +2038,7 @@
     </div>
   </nav>
 
+
   <!-- XP Progress Bar -->
   <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-fill"></div></div>
   <div class="xp-label" id="xp-label">PROFILE 0% EXPLORED</div>
@@ -1985,6 +2054,8 @@
         download="Matheus-Simoes-CV-PT.pdf">Download CV (PT)</a>
       <a href="ENGLISH_2025_CURRICULUM_MATHEUS-SIMOES%20%283%29.pdf" class="btn btn-secondary"
         download="Matheus-Simoes-Resume-EN.pdf">Resume (EN)</a>
+      <a href="#" id="hero-contact-btn" class="btn hero-btn-contact" data-i18n="hero-btn-contact"
+        onclick="openContactPanel(); return false;">Contato</a>
     </div>
     <div class="scroll-hint">SCROLL</div>
   </section>
@@ -3395,6 +3466,7 @@
       'ach-real-games-title': 'REAL GAMES FAN', 'ach-real-games-desc': '43+ projetos descobertos',
       'ach-lang-title': 'MULTILÍNGUE', 'ach-lang-desc': 'Idioma alternado com sucesso',
       'hero-btn-projects': 'Ver Projetos',
+      'hero-btn-contact':  'Contato',
       'about-label': '// 01 — SOBRE MIM',
       'about-p1': 'Sou <strong style="color:var(--neon-green)">Game Developer</strong> formado em Engenharia da Computação e atualmente mestrando em Inteligência Artificial. Tenho mais de 10 anos de experiência criando jogos, experiências interativas e aplicações imersivas, com foco especial em <strong style="color:var(--neon-green)">programação de jogos, VR, AR, XR</strong> e sistemas em tempo real. Minha base técnica passa por diferentes engines, linguagens e plataformas, sempre escolhendo a melhor solução para transformar ideias em experiências funcionais.',
       'about-p2': 'Minha carreira passou por projetos no Brasil, Portugal, Miami e Canadá, incluindo experiências para <strong style="color:var(--neon-green)">Sony Music Entertainment</strong>, <strong style="color:var(--neon-green)">Nickelodeon</strong>, <strong style="color:var(--neon-green)">Paramount</strong>, <strong style="color:var(--neon-green)">Globo</strong>, <strong style="color:var(--neon-green)">Senna Park</strong> e outras marcas de entretenimento. Ao longo dessa jornada, atuei em <strong style="color:var(--neon-green)">gameplay, arquitetura Unity, backend</strong>, pipelines técnicos, publicação em lojas, SDKs e sistemas imersivos em tempo real.',
@@ -3480,6 +3552,7 @@
       'ach-real-games-title': 'REAL GAMES FAN', 'ach-real-games-desc': '43+ projects discovered',
       'ach-lang-title': 'MULTILINGUAL', 'ach-lang-desc': 'Language switched successfully',
       'hero-btn-projects': 'View Projects',
+      'hero-btn-contact':  'Contact',
       'about-label': '// 01 — ABOUT ME',
       'about-p1': 'I\'m a <strong style="color:var(--neon-green)">Game Developer</strong> with a degree in Computer Engineering and currently pursuing a Master\'s degree in Artificial Intelligence. I have over 10 years of experience creating games, interactive experiences, and immersive applications, with a special focus on <strong style="color:var(--neon-green)">game programming, VR, AR, XR</strong> and real-time systems. My technical background spans different engines, languages, and platforms, always choosing the best solution to turn ideas into functional experiences.',
       'about-p2': 'My career has taken me through projects in Brazil, Portugal, Miami, and Canada, including experiences for <strong style="color:var(--neon-green)">Sony Music Entertainment</strong>, <strong style="color:var(--neon-green)">Nickelodeon</strong>, <strong style="color:var(--neon-green)">Paramount</strong>, <strong style="color:var(--neon-green)">Globo</strong>, <strong style="color:var(--neon-green)">Senna Park</strong> and other entertainment brands. Throughout this journey, I\'ve worked on <strong style="color:var(--neon-green)">gameplay programming, Unity architecture, backend systems</strong>, technical pipelines, store publishing, SDKs, and real-time immersive systems.',
@@ -3628,12 +3701,26 @@
     el.querySelector('.ach-title').textContent = t['ach-' + id + '-title'] || id.toUpperCase();
     el.querySelector('.ach-desc').textContent  = t['ach-' + id + '-desc'] || '';
     el.querySelector('.ach-xp').textContent    = '+' + xp + ' XP';
+    // The 'final' achievement gets the purple breathing variant on mobile
+    el.classList.toggle('is-final', id === 'final');
   }
 
   function _repositionToasts() {
     _activeToasts.forEach((entry, i) => {
       entry.el.style.top = (_TOAST_BASE + i * _TOAST_STEP) + 'px';
     });
+  }
+
+  let _heroPulseTimer = null;
+
+  function _dismissToastNow(entry) {
+    clearTimeout(entry.timer);
+    entry.el.classList.remove('show');
+    entry.el.onclick = null;
+    entry.el.style.cursor = '';
+    _activeToasts = _activeToasts.filter(a => a !== entry);
+    _repositionToasts();
+    setTimeout(_processAchQueue, 460);
   }
 
   function _showToast(item) {
@@ -3645,12 +3732,37 @@
     _repositionToasts();
     _fillToast(el, item.id, item.icon, item.xp);
     el.classList.add('show');
+
+    // Final ach: clickable to open contact panel + lingers longer for the breathing animation
+    const isFinal = item.id === 'final';
+    if (isFinal) {
+      el.style.cursor = 'pointer';
+      el.onclick = () => {
+        openContactPanel();
+        _dismissToastNow(entry);
+      };
+    } else {
+      el.style.cursor = '';
+      el.onclick = null;
+    }
+
+    const dismissDelay = isFinal ? 6500 : 3800;
     entry.timer = setTimeout(() => {
       el.classList.remove('show');
+      el.onclick = null;
+      el.style.cursor = '';
       _activeToasts = _activeToasts.filter(a => a !== entry);
       _repositionToasts(); // remaining slide up
       setTimeout(_processAchQueue, 460);
-    }, 3800);
+      // After the 'final' toast dismisses on mobile, pulse the hero "Contato" button
+      if (isFinal && window.innerWidth <= 768) {
+        clearTimeout(_heroPulseTimer);
+        _heroPulseTimer = setTimeout(() => {
+          const heroBtn = document.getElementById('hero-contact-btn');
+          if (heroBtn) heroBtn.classList.add('nav-contact-pulse');
+        }, 500);
+      }
+    }, dismissDelay);
   }
 
   function _processAchQueue() {
@@ -3668,6 +3780,12 @@
   }
 
   function showFinalAch() {
+    // Mobile: route through the regular toast queue (purple variant via id='final').
+    // _showToast's dismissal callback then lights up the hamburger pulse dot.
+    if (window.innerWidth <= 768) {
+      triggerAch('final', '🌟', 25);
+      return;
+    }
     const el = document.getElementById('ach-final');
     if (el._finalShowing) return;
     el._finalShowing = true;
@@ -3677,7 +3795,7 @@
       el._finalShowing = false;
       // After slide-out completes, start subtle nav pulse
       setTimeout(() => {
-        const link = document.querySelector('[data-i18n="nav-contact"]');
+        const link = document.querySelector('nav .nav-links [data-i18n="nav-contact"]');
         if (link) link.classList.add('nav-contact-pulse');
       }, 520);
     }, 10000);
@@ -3685,12 +3803,15 @@
 
   function openContactPanel() {
     const el = document.getElementById('ach-final');
-    clearTimeout(el._finalTimer);
-    el._finalShowing = false;
-    el.classList.remove('show');
+    if (el) {
+      clearTimeout(el._finalTimer);
+      el._finalShowing = false;
+      el.classList.remove('show');
+    }
     document.getElementById('contact-panel').classList.add('open');
-    const link = document.querySelector('[data-i18n="nav-contact"]');
-    if (link) link.classList.remove('nav-contact-pulse');
+    // Cancel pending hero-contact pulse + clear any active pulse (desktop nav + mobile hero btn)
+    clearTimeout(_heroPulseTimer);
+    document.querySelectorAll('.nav-contact-pulse').forEach(e => e.classList.remove('nav-contact-pulse'));
   }
   function closeContactPanel() {
     document.getElementById('contact-panel').classList.remove('open');
@@ -3768,6 +3889,8 @@
     return center;
   }
 
+  const _isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
+
   let _shipY = _computeShipTargetY();
   let _lastSetShipY = -9999;
   function _shipTick() {
@@ -3775,13 +3898,12 @@
     _shipY += (tgt - _shipY) * 0.22;
     if (Math.abs(tgt - _shipY) < 0.25) _shipY = tgt;
     if (Math.abs(_shipY - _lastSetShipY) > 0.05) {
-      // translate3d for GPU + no layout thrash; -18px = half of 36px ship height
       _nave.style.transform = `translate3d(0, ${_shipY - 18}px, 0)`;
       _lastSetShipY = _shipY;
     }
     requestAnimationFrame(_shipTick);
   }
-  requestAnimationFrame(_shipTick);
+  if (_isDesktop()) requestAnimationFrame(_shipTick);
 
   // ─── Hover tracking + fade-ahead on project grid ───
   function _applyFadeAhead(el) {
@@ -3895,8 +4017,21 @@
     const p = document.createElement('div');
     p.className = 'tl-pulse';
     p.style.top = localY + 'px';
+    // Clip the pulse so it never overflows the timeline's vertical bounds.
+    // The element is 820px tall with margin-top:-410 → halfH = 410 above & below.
+    // clipPath inset values are in element-local coords (pre-transform);
+    // they scale together with scaleY, keeping the visible top/bottom edges
+    // aligned with the timeline's vertical limits at every scale step.
+    const halfH = 410;
+    const above = Math.max(0, Math.min(halfH, localY));
+    const below = Math.max(0, Math.min(halfH, tlR.height - localY));
+    const topClip = halfH - above;
+    const botClip = halfH - below;
+    if (topClip > 0 || botClip > 0) {
+      p.style.clipPath = `inset(${topClip}px 0 ${botClip}px 0)`;
+    }
     tl.appendChild(p);
-    setTimeout(() => p.remove(), 1200);
+    setTimeout(() => p.remove(), 1600);
   }
 
   function _hitTarget(tgt, hitPageX, hitPageY) {
@@ -3974,10 +4109,11 @@
   let _autoShootTimer = null;
   function _scheduleNext() {
     clearTimeout(_autoShootTimer);
+    if (!_isDesktop()) return;
     const delay = 4500 + Math.random() * 4000; // 4.5 – 8.5 s
     _autoShootTimer = setTimeout(_shoot, delay);
   }
-  setTimeout(_shoot, 3000);
+  if (_isDesktop()) setTimeout(_shoot, 3000);
 
 </script>
 
