@@ -166,15 +166,16 @@
     }
 
     /* ─── LANG FLAGS ─── */
-    .lang-flags { display: flex; gap: 4px; align-items: center; }
+    .lang-flags { display: flex; gap: 6px; align-items: center; }
     .flag-btn {
-      background: none; border: 1px solid transparent; border-radius: 5px;
-      font-size: 1.35rem; line-height: 1; padding: 3px 5px;
+      background: none; border: 2px solid transparent; border-radius: 5px;
+      padding: 2px 4px; line-height: 0;
       cursor: pointer; transition: opacity 0.2s, border-color 0.2s, transform 0.15s;
-      opacity: 0.38; filter: grayscale(40%);
+      opacity: 0.38; filter: grayscale(60%);
     }
-    .flag-btn:hover  { opacity: 0.8; filter: none; }
-    .flag-btn.active { opacity: 1; filter: none; border-color: rgba(0,255,136,0.45); transform: scale(1.1); }
+    .flag-btn img { display: block; border-radius: 2px; width: 28px; height: 20px; object-fit: cover; }
+    .flag-btn:hover  { opacity: 0.85; filter: grayscale(0%); }
+    .flag-btn.active { opacity: 1; filter: grayscale(0%); border-color: rgba(0,255,136,0.55); transform: scale(1.12); box-shadow: 0 0 8px rgba(0,255,136,0.3); }
 
     /* ─── LANG TOGGLE (kept for fallback) ─── */
     .lang-toggle {
@@ -1734,8 +1735,12 @@
       <li><a href="#" onclick="openContactPanel();return false;" data-i18n="nav-contact">Contato</a></li>
     </ul>
     <div class="lang-flags">
-      <button class="flag-btn active" id="flag-pt" onclick="setLang('pt')" title="Português (BR)">🇧🇷</button>
-      <button class="flag-btn"        id="flag-en" onclick="setLang('en')" title="English (US)">🇺🇸</button>
+      <button class="flag-btn active" id="flag-pt" onclick="setLang('pt')" title="Português (BR)">
+        <img src="https://flagcdn.com/28x21/br.png" alt="BR" width="28" height="21">
+      </button>
+      <button class="flag-btn" id="flag-en" onclick="setLang('en')" title="English (US)">
+        <img src="https://flagcdn.com/28x21/us.png" alt="US" width="28" height="21">
+      </button>
     </div>
   </nav>
 
