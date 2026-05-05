@@ -1610,7 +1610,7 @@
     border-radius: 4px;
     box-shadow: 0 0 28px rgba(0,255,136,0.12), inset 0 0 20px rgba(0,255,136,0.03);
     padding: 11px 14px; display: flex; align-items: center; gap: 12px;
-    z-index: 1100; transition: right 0.45s cubic-bezier(.22,.68,0,1.12);
+    z-index: 1100; transition: right 0.45s cubic-bezier(.22,.68,0,1.12), top 0.4s cubic-bezier(.22,.68,0,1.12);
     backdrop-filter: blur(14px); cursor: default;
   }
   .ach-toast.show { right: 16px; }
@@ -1621,16 +1621,16 @@
     border-color: rgba(191,0,255,0.85); border-left-color: var(--neon-purple); border-left-width: 4px;
     box-shadow: 0 0 40px rgba(191,0,255,0.3), inset 0 0 24px rgba(191,0,255,0.07);
     cursor: pointer;
-    transition: transform 0.5s cubic-bezier(.22,.68,0,1.12), box-shadow 0.3s;
+    transition: transform 0.5s cubic-bezier(.22,.68,0,1.12);
   }
   .ach-final.show {
     transform: translateX(-50%) translateY(0);
-    animation: achGlow 2.4s ease-in-out infinite;
+    animation: achGlow 3.8s ease-in-out infinite;
   }
-  .ach-final:hover { box-shadow: 0 0 65px rgba(191,0,255,0.6), inset 0 0 30px rgba(191,0,255,0.12); }
+  .ach-final:hover { box-shadow: 0 0 55px rgba(191,0,255,0.45), inset 0 0 20px rgba(191,0,255,0.09); }
   @keyframes achGlow {
-    0%,100% { box-shadow: 0 0 35px rgba(191,0,255,0.28), inset 0 0 18px rgba(191,0,255,0.06); }
-    50%      { box-shadow: 0 0 75px rgba(191,0,255,0.65), 0 0 140px rgba(191,0,255,0.2), inset 0 0 30px rgba(191,0,255,0.12); }
+    0%,100% { box-shadow: 0 0 20px rgba(191,0,255,0.16), inset 0 0 10px rgba(191,0,255,0.04); }
+    50%      { box-shadow: 0 0 48px rgba(191,0,255,0.38), 0 0 85px rgba(191,0,255,0.1), inset 0 0 18px rgba(191,0,255,0.07); }
   }
   .ach-icon { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
   .ach-body { flex: 1; min-width: 0; }
@@ -2149,15 +2149,24 @@
     <p class="footer-copy" data-i18n="footer-copy">© 2025 MATHEUS SIMÕES — GAME DEVELOPER // ALL SYSTEMS ONLINE</p>
   </footer>
 
-  <!-- ── Achievement: regular (queued) ── -->
+  <!-- ── Achievement toasts (pool of 2 for stacking) ── -->
   <div id="ach-toast" class="ach-toast">
-    <div class="ach-icon" id="ach-icon">🔧</div>
+    <div class="ach-icon">🔧</div>
     <div class="ach-body">
-      <div class="ach-badge">// ACHIEVEMENT UNLOCKED</div>
-      <div class="ach-title" id="ach-title">SISTEMA INICIALIZADO</div>
-      <div class="ach-desc" id="ach-desc">Portfolio carregado com sucesso</div>
+      <div class="ach-badge">// CONQUISTA DESBLOQUEADA</div>
+      <div class="ach-title">—</div>
+      <div class="ach-desc">—</div>
     </div>
-    <div class="ach-xp" id="ach-xp">+5 XP</div>
+    <div class="ach-xp">+0 XP</div>
+  </div>
+  <div id="ach-toast-2" class="ach-toast">
+    <div class="ach-icon">🔧</div>
+    <div class="ach-body">
+      <div class="ach-badge">// CONQUISTA DESBLOQUEADA</div>
+      <div class="ach-title">—</div>
+      <div class="ach-desc">—</div>
+    </div>
+    <div class="ach-xp">+0 XP</div>
   </div>
 
   <!-- ── Achievement: final (clicável, abre contato) ── -->
@@ -3181,12 +3190,12 @@
     _phrases = [...t['typewriter']];
     _phraseIdx = 0;
 
-    // Update toast text if one is currently on screen
-    if (_achBusy && _currentAchId) {
-      document.querySelector('#ach-toast .ach-badge').textContent = t['ach-badge'] || '// CONQUISTA';
-      document.getElementById('ach-title').textContent = t['ach-' + _currentAchId + '-title'] || _currentAchId.toUpperCase();
-      document.getElementById('ach-desc').textContent  = t['ach-' + _currentAchId + '-desc'] || '';
-    }
+    // Update any toasts currently on screen
+    _activeToasts.forEach(entry => {
+      entry.el.querySelector('.ach-badge').textContent = t['ach-badge'] || '// CONQUISTA';
+      entry.el.querySelector('.ach-title').textContent = t['ach-' + entry.id + '-title'] || entry.id.toUpperCase();
+      entry.el.querySelector('.ach-desc').textContent  = t['ach-' + entry.id + '-desc'] || '';
+    });
 
     triggerAch('lang', '🌐', 10);
   }
@@ -3194,7 +3203,9 @@
   // ─── ACHIEVEMENT & XP SYSTEM ────────────────────────────────────────────
 
   const _achUnlocked = new Set();
-  let _xp = 0, _achQueue = [], _achBusy = false, _currentAchId = null;
+  let _xp = 0, _achQueue = [], _activeToasts = [];
+  const _toastPool = [document.getElementById('ach-toast'), document.getElementById('ach-toast-2')];
+  const _TOAST_BASE = 82, _TOAST_STEP = 80; // px: top of first slot; spacing between slots
 
   function _addXP(n) {
     _xp = Math.min(_xp + n, 100);
@@ -3210,23 +3221,42 @@
     }
   }
 
-  function _nextAch() {
-    if (_achBusy || !_achQueue.length) return;
-    _achBusy = true;
-    const { icon, id, xp } = _achQueue.shift();
-    _currentAchId = id;
+  function _fillToast(el, id, icon, xp) {
     const t = i18n[currentLang];
-    const toast = document.getElementById('ach-toast');
-    document.getElementById('ach-icon').textContent  = icon;
-    document.querySelector('#ach-toast .ach-badge').textContent = t['ach-badge'] || '// CONQUISTA';
-    document.getElementById('ach-title').textContent = t['ach-' + id + '-title'] || id.toUpperCase();
-    document.getElementById('ach-desc').textContent  = t['ach-' + id + '-desc'] || '';
-    document.getElementById('ach-xp').textContent    = '+' + xp + ' XP';
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => { _achBusy = false; _currentAchId = null; _nextAch(); }, 480);
+    el.querySelector('.ach-icon').textContent  = icon;
+    el.querySelector('.ach-badge').textContent = t['ach-badge'] || '// CONQUISTA';
+    el.querySelector('.ach-title').textContent = t['ach-' + id + '-title'] || id.toUpperCase();
+    el.querySelector('.ach-desc').textContent  = t['ach-' + id + '-desc'] || '';
+    el.querySelector('.ach-xp').textContent    = '+' + xp + ' XP';
+  }
+
+  function _repositionToasts() {
+    _activeToasts.forEach((entry, i) => {
+      entry.el.style.top = (_TOAST_BASE + i * _TOAST_STEP) + 'px';
+    });
+  }
+
+  function _showToast(item) {
+    if (_activeToasts.length >= 2) { _achQueue.unshift(item); return; }
+    const el = _toastPool.find(e => !_activeToasts.some(a => a.el === e));
+    if (!el) { _achQueue.unshift(item); return; }
+    const entry = { el, id: item.id };
+    _activeToasts.push(entry);
+    _repositionToasts();
+    _fillToast(el, item.id, item.icon, item.xp);
+    el.classList.add('show');
+    entry.timer = setTimeout(() => {
+      el.classList.remove('show');
+      _activeToasts = _activeToasts.filter(a => a !== entry);
+      _repositionToasts(); // remaining slide up
+      setTimeout(_processAchQueue, 460);
     }, 3800);
+  }
+
+  function _processAchQueue() {
+    while (_achQueue.length && _activeToasts.length < 2) {
+      _showToast(_achQueue.shift());
+    }
   }
 
   function triggerAch(id, icon, xp) {
@@ -3234,7 +3264,7 @@
     _achUnlocked.add(id);
     _addXP(xp);
     _achQueue.push({ icon, id, xp });
-    _nextAch();
+    _processAchQueue();
   }
 
   function showFinalAch() {
