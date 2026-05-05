@@ -697,8 +697,9 @@
     }
 
     .projects-category-title {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
       color: var(--neon-purple);
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -706,13 +707,14 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      text-shadow: 0 0 14px rgba(191,0,255,0.85), 0 0 32px rgba(191,0,255,0.4);
     }
 
     .projects-category-title::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(to right, rgba(191, 0, 255, 0.3), transparent);
+      background: linear-gradient(to right, rgba(191,0,255,0.55), transparent);
     }
 
     .projects-grid {
@@ -1601,13 +1603,23 @@
   }
   .ach-toast.show { right: 16px; }
   .ach-final {
-    top: auto; bottom: 24px; right: -340px;
-    border-color: rgba(191,0,255,0.5); border-left-color: var(--neon-purple);
-    box-shadow: 0 0 32px rgba(191,0,255,0.18), inset 0 0 20px rgba(191,0,255,0.04);
+    top: auto; bottom: 28px; left: 50%; right: auto;
+    transform: translateX(-50%) translateY(120px);
+    width: 320px;
+    border-color: rgba(191,0,255,0.85); border-left-color: var(--neon-purple); border-left-width: 4px;
+    box-shadow: 0 0 40px rgba(191,0,255,0.3), inset 0 0 24px rgba(191,0,255,0.07);
     cursor: pointer;
+    transition: transform 0.5s cubic-bezier(.22,.68,0,1.12), box-shadow 0.3s;
   }
-  .ach-final.show { right: 16px; }
-  .ach-final:hover { border-color: rgba(191,0,255,0.85); box-shadow: 0 0 44px rgba(191,0,255,0.3); }
+  .ach-final.show {
+    transform: translateX(-50%) translateY(0);
+    animation: achGlow 2.4s ease-in-out infinite;
+  }
+  .ach-final:hover { box-shadow: 0 0 65px rgba(191,0,255,0.6), inset 0 0 30px rgba(191,0,255,0.12); }
+  @keyframes achGlow {
+    0%,100% { box-shadow: 0 0 35px rgba(191,0,255,0.28), inset 0 0 18px rgba(191,0,255,0.06); }
+    50%      { box-shadow: 0 0 75px rgba(191,0,255,0.65), 0 0 140px rgba(191,0,255,0.2), inset 0 0 30px rgba(191,0,255,0.12); }
+  }
   .ach-icon { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
   .ach-body { flex: 1; min-width: 0; }
   .ach-badge {
@@ -1781,86 +1793,6 @@
       <p class="section-label reveal" data-i18n="proj-label">// 02 — PROJETOS</p>
       <h2 class="section-title reveal">Projects</h2>
 
-      <!-- PESSOAIS -->
-      <div class="projects-category reveal">
-        <p class="projects-category-title" data-i18n="cat-personal">Projetos Pessoais</p>
-        <div class="projects-grid">
-
-          <div class="project-card reveal" onclick="openModal('p-vr')">
-            <div class="project-media"><video src="Personal/VR Driving Mecanics.mp4" autoplay loop muted
-                playsinline></video></div>
-            <div class="project-body">
-              <h3 class="project-title">VR Driving Mechanics</h3>
-              <p class="project-desc" data-i18n="proj-vr-desc">Mecânicas realistas de direção em realidade virtual —
-                steering, navegação de obstáculos e controle de veículo.</p>
-              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">VR</span><span
-                  class="project-tag">C#</span><span class="project-tag">OpenXR</span></div>
-            </div>
-          </div>
-
-          <div class="project-card reveal reveal-delay-1" onclick="openModal('p-hand')">
-            <div class="project-media"><video src="Personal/Hand Mecanics project.mp4" autoplay loop muted
-                playsinline></video></div>
-            <div class="project-body">
-              <h3 class="project-title">Hand Mechanics Project</h3>
-              <p class="project-desc" data-i18n="proj-hand-desc">Projeto VR em Unity focado em interações físicas de mão
-                — agarrar, jogar e pegar objetos com realismo.</p>
-              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">VR</span><span
-                  class="project-tag">Physics</span></div>
-            </div>
-          </div>
-
-          <div class="project-card reveal reveal-delay-2" onclick="openModal('p-ttt')">
-            <div class="project-media"><video src="Personal/TicTacToe Minimax.mp4" autoplay loop muted
-                playsinline></video></div>
-            <div class="project-body">
-              <h3 class="project-title">TicTacToe Minimax</h3>
-              <p class="project-desc" data-i18n="proj-ttt-desc">Implementação do algoritmo Minimax — IA invencível no
-                jogo da velha com tomada de decisão ótima.</p>
-              <div class="project-tags"><span class="project-tag">C#</span><span class="project-tag">AI</span><span
-                  class="project-tag">Algorithm</span></div>
-            </div>
-          </div>
-
-          <div class="project-card reveal" onclick="openModal('p-yaya')">
-            <div class="project-media"><video src="Personal/Yaya the game.mp4" autoplay loop muted playsinline></video>
-            </div>
-            <div class="project-body">
-              <h3 class="project-title">Yaya the Game</h3>
-              <p class="project-desc" data-i18n="proj-yaya-desc">Plataformer shooter com três fases, projeto de
-                conclusão de curso em Unity e C#.</p>
-              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">C#</span><span
-                  class="project-tag">Platformer</span></div>
-            </div>
-          </div>
-
-          <div class="project-card reveal reveal-delay-1" onclick="openModal('p-outw')">
-            <div class="project-media"><video src="Personal/Outwlaw 2D.mp4" autoplay loop muted playsinline></video>
-            </div>
-            <div class="project-body">
-              <h3 class="project-title">Outwlaw 2D</h3>
-              <p class="project-desc" data-i18n="proj-outw-desc">Recriação do clássico Outlaw desenvolvida em um dia —
-                pixel art, duelos e estilo retrô.</p>
-              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">Pixel
-                  Art</span><span class="project-tag">C#</span></div>
-            </div>
-          </div>
-
-          <div class="project-card reveal reveal-delay-2" onclick="openModal('p-frog')">
-            <div class="project-media"><video src="Personal/Frogger 3D.mp4" autoplay loop muted playsinline></video>
-            </div>
-            <div class="project-body">
-              <h3 class="project-title">Frogger 3D</h3>
-              <p class="project-desc" data-i18n="proj-frog-desc">Recriação 3D do icônico arcade Frogger, mecânica
-                clássica em ambiente moderno.</p>
-              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">C#</span><span
-                  class="project-tag">3D</span></div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
       <!-- EMPRESA: CARDS CLICÁVEIS COM POPUP -->
       <div class="projects-category reveal">
         <p class="projects-category-title" data-i18n="cat-company">Projetos de Empresa — Clique para ver detalhes</p>
@@ -1984,6 +1916,86 @@
               <p class="company-role">Software Developer</p>
               <p class="company-count" data-i18n="cc-perim">Montreal · Unity + WebGL</p>
               <span class="company-arrow">→</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PESSOAIS -->
+      <div class="projects-category reveal">
+        <p class="projects-category-title" data-i18n="cat-personal">Projetos Pessoais</p>
+        <div class="projects-grid">
+
+          <div class="project-card reveal" onclick="openModal('p-vr')">
+            <div class="project-media"><video src="Personal/VR Driving Mecanics.mp4" autoplay loop muted
+                playsinline></video></div>
+            <div class="project-body">
+              <h3 class="project-title">VR Driving Mechanics</h3>
+              <p class="project-desc" data-i18n="proj-vr-desc">Mecânicas realistas de direção em realidade virtual —
+                steering, navegação de obstáculos e controle de veículo.</p>
+              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">VR</span><span
+                  class="project-tag">C#</span><span class="project-tag">OpenXR</span></div>
+            </div>
+          </div>
+
+          <div class="project-card reveal reveal-delay-1" onclick="openModal('p-hand')">
+            <div class="project-media"><video src="Personal/Hand Mecanics project.mp4" autoplay loop muted
+                playsinline></video></div>
+            <div class="project-body">
+              <h3 class="project-title">Hand Mechanics Project</h3>
+              <p class="project-desc" data-i18n="proj-hand-desc">Projeto VR em Unity focado em interações físicas de mão
+                — agarrar, jogar e pegar objetos com realismo.</p>
+              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">VR</span><span
+                  class="project-tag">Physics</span></div>
+            </div>
+          </div>
+
+          <div class="project-card reveal reveal-delay-2" onclick="openModal('p-ttt')">
+            <div class="project-media"><video src="Personal/TicTacToe Minimax.mp4" autoplay loop muted
+                playsinline></video></div>
+            <div class="project-body">
+              <h3 class="project-title">TicTacToe Minimax</h3>
+              <p class="project-desc" data-i18n="proj-ttt-desc">Implementação do algoritmo Minimax — IA invencível no
+                jogo da velha com tomada de decisão ótima.</p>
+              <div class="project-tags"><span class="project-tag">C#</span><span class="project-tag">AI</span><span
+                  class="project-tag">Algorithm</span></div>
+            </div>
+          </div>
+
+          <div class="project-card reveal" onclick="openModal('p-yaya')">
+            <div class="project-media"><video src="Personal/Yaya the game.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="project-body">
+              <h3 class="project-title">Yaya the Game</h3>
+              <p class="project-desc" data-i18n="proj-yaya-desc">Plataformer shooter com três fases, projeto de
+                conclusão de curso em Unity e C#.</p>
+              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">C#</span><span
+                  class="project-tag">Platformer</span></div>
+            </div>
+          </div>
+
+          <div class="project-card reveal reveal-delay-1" onclick="openModal('p-outw')">
+            <div class="project-media"><video src="Personal/Outwlaw 2D.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="project-body">
+              <h3 class="project-title">Outwlaw 2D</h3>
+              <p class="project-desc" data-i18n="proj-outw-desc">Recriação do clássico Outlaw desenvolvida em um dia —
+                pixel art, duelos e estilo retrô.</p>
+              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">Pixel
+                  Art</span><span class="project-tag">C#</span></div>
+            </div>
+          </div>
+
+          <div class="project-card reveal reveal-delay-2" onclick="openModal('p-frog')">
+            <div class="project-media"><video src="Personal/Frogger 3D.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="project-body">
+              <h3 class="project-title">Frogger 3D</h3>
+              <p class="project-desc" data-i18n="proj-frog-desc">Recriação 3D do icônico arcade Frogger, mecânica
+                clássica em ambiente moderno.</p>
+              <div class="project-tags"><span class="project-tag">Unity</span><span class="project-tag">C#</span><span
+                  class="project-tag">3D</span></div>
             </div>
           </div>
 
@@ -3111,7 +3123,7 @@
     // Reset subtitle engine with new phrases
     _phrases = [...t['typewriter']];
     _phraseIdx = 0;
-
+    triggerAch('lang', '🌐', 'MULTILÍNGUE', 'Idioma alternado com sucesso', 10);
   }
 
   // ─── ACHIEVEMENT & XP SYSTEM ────────────────────────────────────────────
@@ -3172,24 +3184,25 @@
   setTimeout(() => triggerAch('boot', '🔧', 'SISTEMA INICIALIZADO', 'Portfolio v2.0 carregado com sucesso', 5), 1400);
 
   // Sections (IntersectionObserver)
+  // rootMargin "-30% 0px" = element must be 30% into viewport before triggering
   function _watchSection(sel, id, icon, title, desc, xp) {
     const el = document.querySelector(sel);
     if (!el) return;
     const obs = new IntersectionObserver(es => {
       if (es[0].isIntersecting) { triggerAch(id, icon, title, desc, xp); obs.disconnect(); }
-    }, { threshold: 0.25 });
+    }, { threshold: 0, rootMargin: '0px 0px -30% 0px' });
     obs.observe(el);
   }
-  _watchSection('#about',      'about',   '👤', 'PERFIL DESCOBERTO',   'Seção Sobre desbloqueada',           10);
-  _watchSection('#projects',   'projects','🎯', 'PROJETOS EXPLORADOS', 'Galeria de projetos desbloqueada',   10);
-  _watchSection('#experience', 'exp',     '📋', 'HISTÓRICO ACESSADO',  'Experiência profissional encontrada', 10);
+  _watchSection('#about',      'about',   '👤', 'PERFIL DESCOBERTO',   'Seção Sobre desbloqueada',           20);
+  _watchSection('#projects',   'projects','🎯', 'PROJETOS EXPLORADOS', 'Galeria de projetos desbloqueada',   25);
+  _watchSection('#experience', 'exp',     '📋', 'HISTÓRICO ACESSADO',  'Experiência profissional encontrada', 20);
 
   // Footer → final achievement
   const _footerEl = document.querySelector('footer');
   if (_footerEl) {
     const _fObs = new IntersectionObserver(es => {
       if (es[0].isIntersecting) {
-        triggerAch('bottom', '🏁', 'EXPEDIÇÃO COMPLETA', 'Todo o perfil explorado', 20);
+        triggerAch('bottom', '🏁', 'EXPEDIÇÃO COMPLETA', 'Todo o perfil explorado', 30);
         setTimeout(() => document.getElementById('ach-final').classList.add('show'), 1200);
         _fObs.disconnect();
       }
