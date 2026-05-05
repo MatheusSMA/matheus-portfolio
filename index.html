@@ -1610,7 +1610,7 @@
     border-radius: 4px;
     box-shadow: 0 0 28px rgba(0,255,136,0.12), inset 0 0 20px rgba(0,255,136,0.03);
     padding: 11px 14px; display: flex; align-items: center; gap: 12px;
-    z-index: 600; transition: right 0.45s cubic-bezier(.22,.68,0,1.12);
+    z-index: 1100; transition: right 0.45s cubic-bezier(.22,.68,0,1.12);
     backdrop-filter: blur(14px); cursor: default;
   }
   .ach-toast.show { right: 16px; }
@@ -1652,6 +1652,13 @@
     color: var(--neon-green); text-align: right; align-self: flex-start; padding-top: 2px; flex-shrink: 0;
   }
   .ach-final .ach-xp { color: var(--neon-purple); font-size: 1.1rem; align-self: center; }
+
+  /* ─── NAV CONTACT PULSE ─── */
+  @keyframes navContactGlow {
+    0%,100% { color: var(--text); text-shadow: none; }
+    50%      { color: var(--neon-purple); text-shadow: 0 0 10px rgba(191,0,255,0.65), 0 0 22px rgba(191,0,255,0.25); }
+  }
+  .nav-contact-pulse { animation: navContactGlow 2.2s ease-in-out infinite; }
 
   /* ─── CONTACT PANEL ─── */
   .contact-panel {
@@ -1777,12 +1784,8 @@
             alt="Matheus Simões" id="profile-photo">
         </div>
         <div class="about-text reveal reveal-delay-1">
-          <p data-i18n="about-p1">Desenvolvedor apaixonado por games com mais de <strong
-              style="color:var(--neon-green)">10 anos de experiência</strong> em backend, game development e Unity,
-            especializado em criar experiências imersivas e interativas com tecnologias de ponta.</p>
-          <p data-i18n="about-p2">Atuo como <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong>
-            na Real Games Studio, criando aplicações AR/VR e interativas para grandes eventos e empresas como Paramount,
-            Rede Globo e Maurício de Sousa (Turma da Mônica).</p>
+          <p data-i18n="about-p1">Desenvolvedor com <strong style="color:var(--neon-green)">10+ anos de experiência</strong> em game development, tech art e backend — sempre na intersecção entre código e criatividade. Carreira construída em studios no Brasil, Portugal e Canadá, entregando desde mecânicas de gameplay até sistemas server-side robustos.</p>
+          <p data-i18n="about-p2">Atualmente <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> na Real Games Studio e CEO da TopMid Studio — criando experiências AR, VR e XR para marcas como Rede Globo, Paramount, Mattel e Sony Music.</p>
           <div class="skills-wrap">
             <span class="skill-tag">Unity</span>
             <span class="skill-tag">Unreal Engine 5</span>
@@ -2985,10 +2988,19 @@
       'ach-final-badge': '// PERFIL COMPLETO',
       'ach-final-title': 'PERFIL DESBLOQUEADO',
       'ach-final-desc': 'Destrinchou tudo — clique para conectar',
+      'ach-boot-title': 'SISTEMA INICIALIZADO', 'ach-boot-desc': 'Portfolio v2.0 carregado com sucesso',
+      'ach-about-title': 'PERFIL DESCOBERTO', 'ach-about-desc': 'Seção Sobre desbloqueada',
+      'ach-projects-title': 'PROJETOS EXPLORADOS', 'ach-projects-desc': 'Galeria de projetos desbloqueada',
+      'ach-exp-title': 'HISTÓRICO ACESSADO', 'ach-exp-desc': 'Experiência profissional encontrada',
+      'ach-bottom-title': 'EXPEDIÇÃO COMPLETA', 'ach-bottom-desc': 'Todo o perfil explorado',
+      'ach-cv-title': 'CURRÍCULO SALVO', 'ach-cv-desc': 'CV baixado com sucesso',
+      'ach-modal-first-title': 'ANÁLISE PROFUNDA', 'ach-modal-first-desc': 'Projeto aberto para inspeção',
+      'ach-real-games-title': 'REAL GAMES FAN', 'ach-real-games-desc': '43+ projetos descobertos',
+      'ach-lang-title': 'MULTILÍNGUE', 'ach-lang-desc': 'Idioma alternado com sucesso',
       'hero-btn-projects': 'Ver Projetos',
       'about-label': '// 01 — SOBRE MIM',
-      'about-p1': 'Desenvolvedor apaixonado por games com mais de <strong style="color:var(--neon-green)">10 anos de experiência</strong> em backend, game development e Unity, especializado em criar experiências imersivas e interativas com tecnologias de ponta.',
-      'about-p2': 'Atuo como <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> na Real Games Studio, criando aplicações AR/VR e interativas para grandes eventos e empresas como Paramount, Rede Globo e Maurício de Sousa (Turma da Mônica).',
+      'about-p1': 'Desenvolvedor com <strong style="color:var(--neon-green)">10+ anos de experiência</strong> em game development, tech art e backend — sempre na intersecção entre código e criatividade. Carreira construída em studios no Brasil, Portugal e Canadá, entregando desde mecânicas de gameplay até sistemas server-side robustos.',
+      'about-p2': 'Atualmente <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> na Real Games Studio e CEO da TopMid Studio — criando experiências AR, VR e XR para marcas como Rede Globo, Paramount, Mattel e Sony Music.',
       'proj-label': '// 02 — PROJETOS',
       'cat-personal': 'Projetos Pessoais',
       'cat-company': 'Projetos de Empresa — Clique para ver detalhes',
@@ -3059,10 +3071,19 @@
       'ach-final-badge': '// FULL PROFILE',
       'ach-final-title': 'FULL PROFILE UNLOCKED',
       'ach-final-desc': 'Explored everything — click to connect',
+      'ach-boot-title': 'SYSTEM INITIALIZED', 'ach-boot-desc': 'Portfolio v2.0 loaded successfully',
+      'ach-about-title': 'PROFILE DISCOVERED', 'ach-about-desc': 'About section unlocked',
+      'ach-projects-title': 'PROJECTS EXPLORED', 'ach-projects-desc': 'Project gallery unlocked',
+      'ach-exp-title': 'HISTORY ACCESSED', 'ach-exp-desc': 'Professional experience found',
+      'ach-bottom-title': 'EXPEDITION COMPLETE', 'ach-bottom-desc': 'Full profile explored',
+      'ach-cv-title': 'RESUME SAVED', 'ach-cv-desc': 'CV downloaded successfully',
+      'ach-modal-first-title': 'DEEP ANALYSIS', 'ach-modal-first-desc': 'Project opened for inspection',
+      'ach-real-games-title': 'REAL GAMES FAN', 'ach-real-games-desc': '43+ projects discovered',
+      'ach-lang-title': 'MULTILINGUAL', 'ach-lang-desc': 'Language switched successfully',
       'hero-btn-projects': 'View Projects',
       'about-label': '// 01 — ABOUT ME',
-      'about-p1': 'Passionate game developer with over <strong style="color:var(--neon-green)">10 years of experience</strong> in backend, game development and Unity, specialized in creating immersive and interactive experiences with cutting-edge technologies.',
-      'about-p2': 'I work as <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> at Real Games Studio, building AR/VR and interactive applications for major events and companies like Paramount, Rede Globo and Maurício de Sousa (Turma da Mônica).',
+      'about-p1': 'Developer with <strong style="color:var(--neon-green)">10+ years of experience</strong> across game development, tech art and backend — living at the intersection of code and creativity. Career built across studios in Brazil, Portugal and Canada, shipping everything from gameplay mechanics to robust server-side systems.',
+      'about-p2': 'Currently working as <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> at Real Games Studio and running TopMid Studio — delivering AR, VR and XR experiences for brands like Rede Globo, Paramount, Mattel and Sony Music.',
       'proj-label': '// 02 — PROJECTS',
       'cat-personal': 'Personal Projects',
       'cat-company': 'Company Projects — Click for details',
@@ -3159,7 +3180,7 @@
     // Reset subtitle engine with new phrases
     _phrases = [...t['typewriter']];
     _phraseIdx = 0;
-    triggerAch('lang', '🌐', 'MULTILÍNGUE', 'Idioma alternado com sucesso', 10);
+    triggerAch('lang', '🌐', 10);
   }
 
   // ─── ACHIEVEMENT & XP SYSTEM ────────────────────────────────────────────
@@ -3174,7 +3195,7 @@
     const label = document.getElementById('xp-label');
     if (fill)  fill.style.width = pct + '%';
     if (label) {
-      label.textContent = 'PROFILE ' + pct + '% EXPLORED';
+      label.textContent = currentLang === 'pt' ? 'PERFIL ' + pct + '% EXPLORADO' : 'PROFILE ' + pct + '% EXPLORED';
       label.classList.add('vis');
       clearTimeout(label._t);
       label._t = setTimeout(() => label.classList.remove('vis'), 2800);
@@ -3184,12 +3205,13 @@
   function _nextAch() {
     if (_achBusy || !_achQueue.length) return;
     _achBusy = true;
-    const { icon, title, desc, xp } = _achQueue.shift();
+    const { icon, id, xp } = _achQueue.shift();
+    const t = i18n[currentLang];
     const toast = document.getElementById('ach-toast');
     document.getElementById('ach-icon').textContent  = icon;
-    document.querySelector('#ach-toast .ach-badge').textContent = i18n[currentLang]['ach-badge'] || '// CONQUISTA';
-    document.getElementById('ach-title').textContent = title;
-    document.getElementById('ach-desc').textContent  = desc;
+    document.querySelector('#ach-toast .ach-badge').textContent = t['ach-badge'] || '// CONQUISTA';
+    document.getElementById('ach-title').textContent = t['ach-' + id + '-title'] || id.toUpperCase();
+    document.getElementById('ach-desc').textContent  = t['ach-' + id + '-desc'] || '';
     document.getElementById('ach-xp').textContent    = '+' + xp + ' XP';
     toast.classList.add('show');
     setTimeout(() => {
@@ -3198,17 +3220,38 @@
     }, 3800);
   }
 
-  function triggerAch(id, icon, title, desc, xp) {
+  function triggerAch(id, icon, xp) {
     if (_achUnlocked.has(id)) return;
     _achUnlocked.add(id);
     _addXP(xp);
-    _achQueue.push({ icon, title, desc, xp });
+    _achQueue.push({ icon, id, xp });
     _nextAch();
   }
 
+  function showFinalAch() {
+    const el = document.getElementById('ach-final');
+    if (el._finalShowing) return;
+    el._finalShowing = true;
+    el.classList.add('show');
+    el._finalTimer = setTimeout(() => {
+      el.classList.remove('show');
+      el._finalShowing = false;
+      // After slide-out completes, start subtle nav pulse
+      setTimeout(() => {
+        const link = document.querySelector('[data-i18n="nav-contact"]');
+        if (link) link.classList.add('nav-contact-pulse');
+      }, 520);
+    }, 10000);
+  }
+
   function openContactPanel() {
-    document.getElementById('ach-final').classList.remove('show');
+    const el = document.getElementById('ach-final');
+    clearTimeout(el._finalTimer);
+    el._finalShowing = false;
+    el.classList.remove('show');
     document.getElementById('contact-panel').classList.add('open');
+    const link = document.querySelector('[data-i18n="nav-contact"]');
+    if (link) link.classList.remove('nav-contact-pulse');
   }
   function closeContactPanel() {
     document.getElementById('contact-panel').classList.remove('open');
@@ -3218,29 +3261,29 @@
   // ── Triggers ─────────────────────────────────────────────────────────────
 
   // Boot
-  setTimeout(() => triggerAch('boot', '🔧', 'SISTEMA INICIALIZADO', 'Portfolio v2.0 carregado com sucesso', 5), 1400);
+  setTimeout(() => triggerAch('boot', '🔧', 5), 1400);
 
   // Sections (IntersectionObserver)
   // rootMargin "-30% 0px" = element must be 30% into viewport before triggering
-  function _watchSection(sel, id, icon, title, desc, xp) {
+  function _watchSection(sel, id, icon, xp) {
     const el = document.querySelector(sel);
     if (!el) return;
     const obs = new IntersectionObserver(es => {
-      if (es[0].isIntersecting) { triggerAch(id, icon, title, desc, xp); obs.disconnect(); }
+      if (es[0].isIntersecting) { triggerAch(id, icon, xp); obs.disconnect(); }
     }, { threshold: 0, rootMargin: '0px 0px -45% 0px' });
     obs.observe(el);
   }
-  _watchSection('#about',      'about',   '👤', 'PERFIL DESCOBERTO',   'Seção Sobre desbloqueada',           20);
-  _watchSection('#projects',   'projects','🎯', 'PROJETOS EXPLORADOS', 'Galeria de projetos desbloqueada',   25);
-  _watchSection('#experience', 'exp',     '📋', 'HISTÓRICO ACESSADO',  'Experiência profissional encontrada', 20);
+  _watchSection('#about',      'about',    '👤', 20);
+  _watchSection('#projects',   'projects', '🎯', 25);
+  _watchSection('#experience', 'exp',      '📋', 20);
 
   // Footer → final achievement
   const _footerEl = document.querySelector('footer');
   if (_footerEl) {
     const _fObs = new IntersectionObserver(es => {
       if (es[0].isIntersecting) {
-        triggerAch('bottom', '🏁', 'EXPEDIÇÃO COMPLETA', 'Todo o perfil explorado', 30);
-        setTimeout(() => document.getElementById('ach-final').classList.add('show'), 1200);
+        triggerAch('bottom', '🏁', 30);
+        setTimeout(showFinalAch, 1200);
         _fObs.disconnect();
       }
     }, { threshold: 0.5 });
@@ -3249,16 +3292,16 @@
 
   // CV download
   document.querySelectorAll('a[download]').forEach(a =>
-    a.addEventListener('click', () => triggerAch('cv', '📄', 'CURRÍCULO SALVO', 'CV baixado com sucesso', 10), { once: true })
+    a.addEventListener('click', () => triggerAch('cv', '📄', 10), { once: true })
   );
 
   // Modal open — wrap openModal to track achievements
   const _origOpenModal = window.openModal;
   window.openModal = function(id) {
     _origOpenModal(id);
-    triggerAch('modal-first', '🔍', 'ANÁLISE PROFUNDA', 'Projeto aberto para inspeção', 15);
+    triggerAch('modal-first', '🔍', 15);
     if (id === 'real-games')
-      setTimeout(() => triggerAch('real-games', '🏆', 'REAL GAMES FAN', '43+ projetos descobertos', 10), 700);
+      setTimeout(() => triggerAch('real-games', '🏆', 10), 700);
   };
 
 </script>
