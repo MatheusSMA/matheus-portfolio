@@ -1697,14 +1697,24 @@
   }
   .contact-link:hover { background: rgba(255,255,255,0.07); transform: translateX(5px); }
   .contact-link-li:hover   { border-color: #0a66c2; box-shadow: 0 0 14px rgba(10,102,194,0.2); }
+  .contact-link-gh:hover   { border-color: #6e40c9; box-shadow: 0 0 14px rgba(110,64,201,0.2); }
   .contact-link-mail:hover { border-color: rgba(0,255,136,0.45); box-shadow: 0 0 14px rgba(0,255,136,0.12); }
   .contact-link-dc:hover   { border-color: #5865f2; box-shadow: 0 0 14px rgba(88,101,242,0.2); }
   .contact-link-wa:hover   { border-color: #25d366; box-shadow: 0 0 14px rgba(37,211,102,0.2); }
+
+  /* ─── ARROWHEAD QUOTE ─── */
+  .dev-philosophy {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.64rem;
+    color: var(--text-dim); opacity: 0.42; margin-top: 1.8rem;
+    letter-spacing: 0.4px; text-align: right; line-height: 1.5;
+    font-style: italic;
+  }
   .c-icon {
     width: 34px; height: 34px; border-radius: 6px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .contact-link-li   .c-icon { background: #0a66c2; color: #fff; }
+  .contact-link-gh   .c-icon { background: #24292e; color: #fff; }
   .contact-link-mail .c-icon { background: rgba(0,255,136,0.14); color: var(--neon-green); }
   .contact-link-dc   .c-icon { background: #5865f2; color: #fff; }
   .contact-link-wa   .c-icon { background: #25d366; color: #fff; }
@@ -1784,8 +1794,9 @@
             alt="Matheus Simões" id="profile-photo">
         </div>
         <div class="about-text reveal reveal-delay-1">
-          <p data-i18n="about-p1">Desenvolvedor com <strong style="color:var(--neon-green)">10+ anos de experiência</strong> em game development, tech art e backend — sempre na intersecção entre código e criatividade. Carreira construída em studios no Brasil, Portugal e Canadá, entregando desde mecânicas de gameplay até sistemas server-side robustos.</p>
-          <p data-i18n="about-p2">Atualmente <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> na Real Games Studio e CEO da TopMid Studio — criando experiências AR, VR e XR para marcas como Rede Globo, Paramount, Mattel e Sony Music.</p>
+          <p data-i18n="about-p1">Sou <strong style="color:var(--neon-green)">Game Developer</strong> formado em Engenharia da Computação e atualmente mestrando em Inteligência Artificial. Tenho mais de 10 anos de experiência criando jogos, experiências interativas e aplicações imersivas, com foco especial em <strong style="color:var(--neon-green)">programação de jogos, VR, AR, XR</strong> e sistemas em tempo real. Minha base técnica passa por diferentes engines, linguagens e plataformas, sempre escolhendo a melhor solução para transformar ideias em experiências funcionais.</p>
+          <p data-i18n="about-p2">Minha carreira passou por projetos no Brasil, Portugal, Miami e Canadá, incluindo experiências para <strong style="color:var(--neon-green)">Sony Music Entertainment</strong>, <strong style="color:var(--neon-green)">Nickelodeon</strong>, <strong style="color:var(--neon-green)">Paramount</strong>, <strong style="color:var(--neon-green)">Globo</strong>, <strong style="color:var(--neon-green)">Senna Park</strong> e outras marcas de entretenimento. Ao longo dessa jornada, atuei em <strong style="color:var(--neon-green)">gameplay, arquitetura Unity, backend</strong>, pipelines técnicos, publicação em lojas, SDKs e sistemas imersivos em tempo real.</p>
+          <p data-i18n="about-p3">O que mais me move é programar jogos: criar mecânicas, resolver problemas complexos, dar vida a interações e construir experiências que realmente funcionem para o jogador. Para mim, limitação não é apenas obstáculo — é ponto de partida criativo. Gosto de encontrar caminhos técnicos para que a experiência aconteça.</p>
           <div class="skills-wrap">
             <span class="skill-tag">Unity</span>
             <span class="skill-tag">Unreal Engine 5</span>
@@ -1804,6 +1815,7 @@
             <span class="skill-tag">PyTorch</span>
             <span class="skill-tag">GitHub Actions</span>
           </div>
+          <p class="dev-philosophy">// "A game for everyone is a game for no one" — Arrowhead Game Studios</p>
         </div>
       </div>
     </div>
@@ -2214,6 +2226,15 @@
             </svg>
           </div>
           <div class="c-text"><strong>LinkedIn</strong><small>/matheussourgames</small></div>
+        </a>
+        <!-- GitHub -->
+        <a href="https://github.com/MatheusSMA" target="_blank" rel="noopener" class="contact-link contact-link-gh">
+          <div class="c-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </div>
+          <div class="c-text"><strong>GitHub</strong><small>/MatheusSMA</small></div>
         </a>
         <!-- Email -->
         <a href="mailto:matheusjut@gmail.com" class="contact-link contact-link-mail">
@@ -3026,8 +3047,9 @@
       'ach-lang-title': 'MULTILÍNGUE', 'ach-lang-desc': 'Idioma alternado com sucesso',
       'hero-btn-projects': 'Ver Projetos',
       'about-label': '// 01 — SOBRE MIM',
-      'about-p1': 'Desenvolvedor com <strong style="color:var(--neon-green)">10+ anos de experiência</strong> em game development, tech art e backend — sempre na intersecção entre código e criatividade. Carreira construída em studios no Brasil, Portugal e Canadá, entregando desde mecânicas de gameplay até sistemas server-side robustos.',
-      'about-p2': 'Atualmente <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> na Real Games Studio e CEO da TopMid Studio — criando experiências AR, VR e XR para marcas como Rede Globo, Paramount, Mattel e Sony Music.',
+      'about-p1': 'Sou <strong style="color:var(--neon-green)">Game Developer</strong> formado em Engenharia da Computação e atualmente mestrando em Inteligência Artificial. Tenho mais de 10 anos de experiência criando jogos, experiências interativas e aplicações imersivas, com foco especial em <strong style="color:var(--neon-green)">programação de jogos, VR, AR, XR</strong> e sistemas em tempo real. Minha base técnica passa por diferentes engines, linguagens e plataformas, sempre escolhendo a melhor solução para transformar ideias em experiências funcionais.',
+      'about-p2': 'Minha carreira passou por projetos no Brasil, Portugal, Miami e Canadá, incluindo experiências para <strong style="color:var(--neon-green)">Sony Music Entertainment</strong>, <strong style="color:var(--neon-green)">Nickelodeon</strong>, <strong style="color:var(--neon-green)">Paramount</strong>, <strong style="color:var(--neon-green)">Globo</strong>, <strong style="color:var(--neon-green)">Senna Park</strong> e outras marcas de entretenimento. Ao longo dessa jornada, atuei em <strong style="color:var(--neon-green)">gameplay, arquitetura Unity, backend</strong>, pipelines técnicos, publicação em lojas, SDKs e sistemas imersivos em tempo real.',
+      'about-p3': 'O que mais me move é programar jogos: criar mecânicas, resolver problemas complexos, dar vida a interações e construir experiências que realmente funcionem para o jogador. Para mim, limitação não é apenas obstáculo — é ponto de partida criativo. Gosto de encontrar caminhos técnicos para que a experiência aconteça.',
       'proj-label': '// 02 — PROJETOS',
       'cat-personal': 'Projetos Pessoais',
       'cat-company': 'Projetos de Empresa — Clique para ver detalhes',
@@ -3109,8 +3131,9 @@
       'ach-lang-title': 'MULTILINGUAL', 'ach-lang-desc': 'Language switched successfully',
       'hero-btn-projects': 'View Projects',
       'about-label': '// 01 — ABOUT ME',
-      'about-p1': 'Developer with <strong style="color:var(--neon-green)">10+ years of experience</strong> across game development, tech art and backend — living at the intersection of code and creativity. Career built across studios in Brazil, Portugal and Canada, shipping everything from gameplay mechanics to robust server-side systems.',
-      'about-p2': 'Currently working as <strong style="color:var(--neon-green)">Tech Art & Game Developer</strong> at Real Games Studio and running TopMid Studio — delivering AR, VR and XR experiences for brands like Rede Globo, Paramount, Mattel and Sony Music.',
+      'about-p1': 'I\'m a <strong style="color:var(--neon-green)">Game Developer</strong> with a degree in Computer Engineering and currently pursuing a Master\'s degree in Artificial Intelligence. I have over 10 years of experience creating games, interactive experiences, and immersive applications, with a special focus on <strong style="color:var(--neon-green)">game programming, VR, AR, XR</strong> and real-time systems. My technical background spans different engines, languages, and platforms, always choosing the best solution to turn ideas into functional experiences.',
+      'about-p2': 'My career has taken me through projects in Brazil, Portugal, Miami, and Canada, including experiences for <strong style="color:var(--neon-green)">Sony Music Entertainment</strong>, <strong style="color:var(--neon-green)">Nickelodeon</strong>, <strong style="color:var(--neon-green)">Paramount</strong>, <strong style="color:var(--neon-green)">Globo</strong>, <strong style="color:var(--neon-green)">Senna Park</strong> and other entertainment brands. Throughout this journey, I\'ve worked on <strong style="color:var(--neon-green)">gameplay programming, Unity architecture, backend systems</strong>, technical pipelines, store publishing, SDKs, and real-time immersive systems.',
+      'about-p3': 'What drives me most is programming games: creating mechanics, solving complex problems, bringing interactions to life, and building experiences that truly work for the player. To me, limitation is not just an obstacle — it is a creative starting point. I enjoy finding technical paths that make the experience happen.',
       'proj-label': '// 02 — PROJECTS',
       'cat-personal': 'Personal Projects',
       'cat-company': 'Company Projects — Click for details',
