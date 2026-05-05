@@ -224,7 +224,11 @@
     font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     color: var(--neon-green);
     margin-bottom: 2.5rem;
-    min-height: 1.5em;
+    height: 3.4rem;          /* fixed — prevents flex hero from shifting when AI anim loads */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .hero-subtitle .cursor-blink {
     display: inline-block;
@@ -235,6 +239,62 @@
     animation: blink 0.8s steps(1) infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── Typewriter cursor (standalone) ── */
+  .tw-cursor {
+    display: inline-block; width: 2px; height: 1em;
+    background: var(--neon-green); margin-left: 3px;
+    vertical-align: middle; animation: blink 0.8s steps(1) infinite;
+  }
+
+  /* ── Unity Gizmo anim ── */
+  .unity-wrap { position: relative; display: inline-block; }
+  .unity-text {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    color: var(--neon-green);
+    transition: transform 1.2s cubic-bezier(.22,.68,0,1.12), opacity 0.5s;
+  }
+  /* Gizmo containers — positioned via JS to track text visual center */
+  .unity-gizmo-center {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    transition: opacity 0.3s; /* left/top transitions injected per phase by JS */
+  }
+  /* Fake OS-style cursor that "drags" the text */
+  .fake-cursor {
+    position: absolute;
+    pointer-events: none;
+    transition: left 0.85s cubic-bezier(.25,.46,0,1.02), top 0.85s cubic-bezier(.25,.46,0,1.02), opacity 0.22s;
+    z-index: 10;
+  }
+
+  /* ── AI Gen anim ── */
+  .aigen-wrap { display: flex; flex-direction: column; gap: 0.28rem; align-items: center; }
+  .aigen-header {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--neon-purple); font-size: 0.62rem; letter-spacing: 2.5px;
+  }
+  .aigen-bar-track { width: 175px; height: 2px; background: rgba(0,255,136,0.13); }
+  .aigen-bar-fill {
+    height: 100%; width: 0%;
+    background: var(--neon-green);
+    box-shadow: 0 0 7px var(--neon-green);
+    transition: width 1.1s ease;
+  }
+  .aigen-status {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-dim); font-size: 0.58rem;
+  }
+  .aigen-output {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    color: var(--neon-green); min-height: 1.5em;
+    transition: filter 0.45s ease, opacity 0.4s;
+  }
+  .aigen-cur { color: var(--neon-purple); animation: blink 0.55s steps(1) infinite; }
   .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
   .btn {
     font-family: 'Share Tech Mono', monospace;
@@ -1086,7 +1146,7 @@
 <section id="hero">
   <p class="hero-tag">// PORTFOLIO v2.0 — GAME DEVELOPER</p>
   <h1 class="hero-name glitch" data-text="Matheus Simões">Matheus Simões</h1>
-  <p class="hero-subtitle"><span id="typewriter"></span><span class="cursor-blink"></span></p>
+  <div class="hero-subtitle" id="subtitle-stage"></div>
   <div class="hero-buttons">
     <a href="#projects" class="btn" data-i18n="hero-btn-projects">Ver Projetos</a>
     <a href="2025_CURRICULUM_MATHEUS-SIMOES.docx.pdf" class="btn btn-secondary" download="Matheus-Simoes-CV-PT.pdf">Download CV (PT)</a>
@@ -1438,17 +1498,247 @@ function animateCursor() {
 }
 animateCursor();
 
-// ─── TYPEWRITER ───
-const phrases = ['Game Developer | Programmer','Unity & Unreal Engine 5','VR / AR / XR Specialist','Tech Art & Interactive Experiences'];
-let pi = 0, ci = 0, deleting = false;
-const tw = document.getElementById('typewriter');
-function type() {
-  const phrase = phrases[pi];
-  if (!deleting) { tw.textContent = phrase.slice(0, ++ci); if (ci === phrase.length) { deleting = true; setTimeout(type, 2000); return; } }
-  else { tw.textContent = phrase.slice(0, --ci); if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; } }
-  setTimeout(type, deleting ? 40 : 80);
+// ─── ANIMATED SUBTITLE ENGINE ───
+const stage = document.getElementById('subtitle-stage');
+let _phrases = ['Desenvolvedor de Games | Programador', 'Unity & Unreal Engine 5', 'Especialista VR / AR / XR', 'Tech Art & Experiências Interativas'];
+let _phraseIdx = 0, _animIdx = 0;
+const ANIM_N = 3; // 0=typewriter 1=unity-gizmo 2=ai-gen
+
+function nextSubtitle() {
+  const phrase = _phrases[_phraseIdx];
+  _phraseIdx = (_phraseIdx + 1) % _phrases.length;
+  const anim = _animIdx % ANIM_N;
+  _animIdx++;
+  if      (anim === 0) animTypewriter(phrase, nextSubtitle);
+  else if (anim === 1) animUnityGizmo(phrase, nextSubtitle);
+  else                 animAIGen(phrase, nextSubtitle);
 }
-type();
+
+// ── 1. Typewriter ──
+function animTypewriter(phrase, onDone) {
+  stage.innerHTML = '<span id="tw-t"></span><span class="tw-cursor"></span>';
+  const tw = document.getElementById('tw-t');
+  let ci = 0, del = false;
+  function step() {
+    if (!del) {
+      tw.textContent = phrase.slice(0, ++ci);
+      if (ci === phrase.length) { del = true; setTimeout(step, 2200); return; }
+    } else {
+      tw.textContent = phrase.slice(0, --ci);
+      if (ci === 0) { onDone(); return; }
+    }
+    setTimeout(step, del ? 36 : 76);
+  }
+  step();
+}
+
+// ── 2. Unity Gizmo ──
+function animUnityGizmo(phrase, onDone) {
+  // Sequence:
+  //  1. Text appears offset-left + down + slightly rotated
+  //  2. Move gizmo (X red / Y green) appears centred on text visual position
+  //  3. Cursor → red X handle → drags text RIGHT to correct X
+  //  4. Cursor → green Y handle → drags text UP to correct Y
+  //  5. Text now in place but still slightly rotated
+  //  6. Rotation gizmo appears → cursor corrects rotation → done
+  stage.innerHTML = `
+    <div class="unity-wrap" id="uwrap">
+      <span class="unity-text" id="ut">${phrase}</span>
+      <!-- Move gizmo (2D: X red right, Y green up) — JS-positioned -->
+      <div class="unity-gizmo-center" id="ugc-move" style="opacity:0;">
+        <svg viewBox="0 0 60 60" width="56" height="56" overflow="visible">
+          <circle cx="30" cy="30" r="4" fill="#9baab5" opacity="0.9"/>
+          <!-- Y — up, green -->
+          <line x1="30" y1="30" x2="30" y2="5" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="30,1 25.5,12 34.5,12" fill="#00ff88"/>
+          <!-- X — right, red -->
+          <line x1="30" y1="30" x2="55" y2="30" stroke="#ff4444" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="59,30 48,25.5 48,34.5" fill="#ff4444"/>
+        </svg>
+      </div>
+      <!-- Rotation gizmo (two-tone arc) — JS-positioned -->
+      <div class="unity-gizmo-center" id="ugc-rot" style="opacity:0;">
+        <svg viewBox="0 0 70 70" width="70" height="70" overflow="visible">
+          <path d="M 35,4 A 31,31 0 0 0 35,66" fill="none" stroke="#ff4444" stroke-width="6" stroke-linecap="round" opacity="0.88"/>
+          <path d="M 35,4 A 31,31 0 0 1 35,66" fill="none" stroke="#00ff88" stroke-width="6" stroke-linecap="round" opacity="0.88"/>
+        </svg>
+      </div>
+      <!-- Fake OS arrow cursor -->
+      <div class="fake-cursor" id="fcursor" style="opacity:0;">
+        <svg width="14" height="18" viewBox="0 0 14 18">
+          <path d="M1,0 L1,14 L4.2,10 L6.8,16.5 L9,15.6 L6.4,9.2 L11,9.2 Z"
+                fill="white" stroke="rgba(0,0,0,0.75)" stroke-width="1.1" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>`;
+
+  const ut     = document.getElementById('ut');
+  const gcMove = document.getElementById('ugc-move');
+  const gcRot  = document.getElementById('ugc-rot');
+  const fc     = document.getElementById('fcursor');
+
+  // Text initial CSS offset: far left, slightly low, a bit rotated
+  const TX = -55, TY = 22;  // initial translateX/Y
+  ut.style.transition = 'transform 0.9s cubic-bezier(.22,.68,0,1.12), opacity 0.5s';
+  ut.style.transform  = `translate(${TX}px, ${TY}px) rotate(-7deg)`;
+  ut.style.opacity    = '0.6';
+
+  // Helpers ─────────────────────────────────────────────────────────────────
+  function wh() { const el = document.getElementById('uwrap'); return { w: el.offsetWidth, h: el.offsetHeight }; }
+  // Visual centre of text given its current JS translate offsets tx,ty
+  function vc(tx, ty) { const { w, h } = wh(); return { vx: w/2 + tx, vy: h/2 + ty }; }
+  // Place move gizmo (56×56 SVG, centre at px 28,28) at text visual centre — instant
+  function placeM(tx, ty) { const { vx, vy } = vc(tx, ty); gcMove.style.left = (vx-28)+'px'; gcMove.style.top = (vy-28)+'px'; }
+  // Animate move gizmo to new visual centre with matching easing
+  function animM(tx, ty) {
+    gcMove.style.transition = 'opacity 0.3s, left 0.9s cubic-bezier(.22,.68,0,1.12), top 0.9s cubic-bezier(.22,.68,0,1.12)';
+    placeM(tx, ty);
+  }
+  // Place rot gizmo (70×70 SVG, centre at px 35,35) at text visual centre — instant
+  function placeR(tx, ty) { const { vx, vy } = vc(tx, ty); gcRot.style.left = (vx-35)+'px'; gcRot.style.top = (vy-35)+'px'; }
+  // Move fake cursor to wrap-relative (x, y)
+  function cur(x, y) { fc.style.left = x+'px'; fc.style.top = y+'px'; }
+
+  // ── SEQUENCE ─────────────────────────────────────────────────────────────
+
+  // t=60  Place move gizmo instantly at initial text visual centre (no position transition yet)
+  setTimeout(() => {
+    gcMove.style.transition = 'opacity 0.3s';
+    placeM(TX, TY);
+  }, 60);
+
+  // t=220 Gizmo fades in
+  setTimeout(() => { gcMove.style.opacity = '1'; }, 220);
+
+  // t=430 Cursor appears ON the red X handle (right side of gizmo)
+  //        X arrow tip ≈ gizmo centre + 27px right
+  setTimeout(() => {
+    const { vx, vy } = vc(TX, TY);
+    cur(vx + 27, vy - 2);
+    fc.style.opacity = '1';
+  }, 430);
+
+  // t=750 ── DRAG RIGHT ── text moves X to 0, gizmo follows, cursor follows
+  setTimeout(() => {
+    ut.style.transform = `translate(0px, ${TY}px) rotate(-7deg)`;
+    animM(0, TY);                           // gizmo tracks in sync (same easing 0.9s)
+    const { vx, vy } = vc(0, TY);
+    cur(vx + 27, vy - 2);                  // cursor stays on X handle at new position
+  }, 750);
+
+  // t=1800 Cursor leaves X handle → moves to green Y handle (top of gizmo)
+  //         Y arrow tip ≈ gizmo centre − 27px up
+  setTimeout(() => {
+    const { vx, vy } = vc(0, TY);
+    cur(vx - 2, vy - 27);
+  }, 1800);
+
+  // t=2550 ── DRAG UP ── text moves Y to 0, gizmo follows, cursor follows
+  setTimeout(() => {
+    ut.style.transform = `translate(0px, 0px) rotate(-7deg)`;
+    animM(0, 0);                            // gizmo tracks in sync
+    const { vx, vy } = vc(0, 0);
+    cur(vx - 2, vy - 27);                  // cursor stays on Y handle at new position
+  }, 2550);
+
+  // t=3600 ── SWAP GIZMOS ── move gizmo fades, rotation gizmo appears
+  //           text is at translate(0,0) rotate(-7deg) — positioned but still tilted
+  setTimeout(() => {
+    gcMove.style.opacity = '0';
+    placeR(0, 0);
+    gcRot.style.opacity = '1';
+    // cursor jumps to ring right edge (3 o'clock)
+    const { vx, vy } = vc(0, 0);
+    cur(vx + 33, vy - 2);
+  }, 3600);
+
+  // t=3950 Cursor arcs counterclockwise + text rotates from -7deg → 0deg
+  setTimeout(() => {
+    ut.style.transition = 'transform 0.85s ease, opacity 0.5s';
+    ut.style.transform  = 'translate(0px, 0px) rotate(0deg)';
+    const { vx, vy } = vc(0, 0);
+    cur(vx + 20, vy + 27);                 // cursor moves toward 5 o'clock (clockwise — matches rotation)
+  }, 3950);
+
+  // t=4700 Cursor settles back at 3 o'clock
+  setTimeout(() => {
+    const { vx, vy } = vc(0, 0);
+    cur(vx + 33, vy - 2);
+  }, 4700);
+
+  // t=5100 Gizmo + cursor fade — text snaps to full opacity/colour (same as other anims)
+  setTimeout(() => {
+    gcRot.style.opacity = '0';
+    fc.style.opacity    = '0';
+    ut.style.transition = 'opacity 0.4s';
+    ut.style.opacity    = '1';
+  }, 5100);
+
+  // t=6700 Text fades out after holding for a moment
+  setTimeout(() => { ut.style.opacity = '0'; }, 6700);
+
+  setTimeout(onDone, 7300);
+}
+
+// ── 3. AI Generation ──
+function animAIGen(phrase, onDone) {
+  // Loading bar → then text appears fully blurred (like AI diffusion preview)
+  // and progressively sharpens, step by step, until crystal clear
+  stage.innerHTML = `
+    <div class="aigen-wrap">
+      <div id="ag-load">
+        <div class="aigen-header">■ SKILL_GEN v2.4 ▌</div>
+        <div class="aigen-bar-track"><div class="aigen-bar-fill" id="agbar"></div></div>
+        <div class="aigen-status" id="agstat">initializing...</div>
+      </div>
+      <div class="aigen-output" id="ag-out" style="opacity:0;"></div>
+    </div>`;
+
+  const bar  = document.getElementById('agbar');
+  const stat = document.getElementById('agstat');
+  const load = document.getElementById('ag-load');
+  const out  = document.getElementById('ag-out');
+
+  setTimeout(() => { bar.style.width = '55%'; stat.textContent = 'analyzing profile...'; }, 120);
+  setTimeout(() => { bar.style.width = '100%'; stat.textContent = 'rendering output...'; }, 720);
+
+  setTimeout(() => {
+    load.style.transition = 'opacity 0.35s';
+    load.style.opacity = '0';
+
+    setTimeout(() => {
+      load.style.display = 'none';
+
+      // Text appears all at once — heavily blurred (diffusion step 0)
+      out.textContent = phrase;
+      out.style.filter     = 'blur(14px)';
+      out.style.opacity    = '0';
+      out.style.transition = 'opacity 0.4s';
+
+      // Fade in while blurry
+      requestAnimationFrame(() => requestAnimationFrame(() => { out.style.opacity = '1'; }));
+
+      // Progressive de-blur — like a diffusion model refining the output
+      const blurSteps = [350, 700, 1100, 1550, 2000];
+      const blurVals  = ['blur(10px)', 'blur(6px)', 'blur(2.5px)', 'blur(0.8px)', 'blur(0px)'];
+      blurSteps.forEach((t, i) => {
+        setTimeout(() => {
+          out.style.transition = 'filter 0.45s ease';
+          out.style.filter = blurVals[i];
+        }, t);
+      });
+
+      // Hold sharp text, then done
+      setTimeout(() => {
+        out.style.transition = 'opacity 0.6s';
+        out.style.opacity = '0';
+      }, 3800);
+      setTimeout(onDone, 4400);
+    }, 380);
+  }, 1550);
+}
+
+nextSubtitle();
 
 // ─── PARTICLES ───
 const canvas = document.getElementById('particles-canvas');
@@ -2064,10 +2354,9 @@ function setLang(lang) {
     openModal(currentModalId);
   }
 
-  // Reset typewriter with new phrases
-  phrases.length = 0;
-  t['typewriter'].forEach(p => phrases.push(p));
-  pi = 0; ci = 0; deleting = false;
+  // Reset subtitle engine with new phrases
+  _phrases = [...t['typewriter']];
+  _phraseIdx = 0;
 }
 </script>
 
